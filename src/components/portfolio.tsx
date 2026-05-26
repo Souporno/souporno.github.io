@@ -532,9 +532,11 @@ function ProjectCard({ project }: { project: Project }) {
               </span>
             ))}
             {project.badge && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-foreground/70 bg-secondary px-2 py-1 rounded-full">
-                {project.badge}
-              </span>
+              project.badge !== "In Progress" && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-foreground/70 bg-secondary px-2 py-1 rounded-full">
+                  {project.badge}
+                </span>
+              )
             )}
           </div>
           <h3 className="font-serif text-xl md:text-2xl font-medium tracking-tight text-foreground group-hover:text-primary transition-colors">
