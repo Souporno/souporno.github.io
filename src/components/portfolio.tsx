@@ -755,7 +755,7 @@ function WorkTab() {
         Selected work
       </h2>
       <p className="font-serif text-3xl md:text-4xl font-medium tracking-tight max-w-xl">
-        Six case studies on people, data, and strategy.
+        Projects I've worked on.
       </p>
 
       <div className="mt-10 flex flex-wrap gap-2">
@@ -772,7 +772,7 @@ function WorkTab() {
                   : "bg-background text-foreground/70 border-border hover:border-primary/50 hover:text-primary")
               }
             >
-              {c}
+              {c === "All" ? "All Projects" : c}
             </button>
           );
         })}
@@ -797,7 +797,7 @@ function PathTab() {
         My Journey
       </h2>
       <p className="font-serif text-3xl md:text-4xl font-medium tracking-tight">
-        From Kolkata to Seattle — a path through code, product, and people.
+        From Chennai to Seattle — a path through engineering, data, and people.
       </p>
 
       <div className="mt-12 relative">
@@ -905,7 +905,7 @@ function ContactTab() {
               <Github className="h-4 w-4" /> github.com/Souporno
             </a>
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/ghosh-souporno/"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 text-foreground/85 hover:text-primary transition-colors"
@@ -1051,7 +1051,7 @@ export function Portfolio() {
               <Github className="h-4 w-4" />
             </a>
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/ghosh-souporno/"
               target="_blank"
               rel="noreferrer"
               className="hover:text-primary transition-colors"
