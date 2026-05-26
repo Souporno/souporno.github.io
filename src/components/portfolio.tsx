@@ -1054,6 +1054,7 @@ export function Portfolio() {
         {tab === "home" && <HomeTab go={go} />}
         {tab === "work" && <WorkTab />}
         {tab === "path" && <PathTab />}
+        {tab === "hobbies" && <HobbiesTab />}
         {tab === "contact" && <ContactTab />}
       </main>
 
