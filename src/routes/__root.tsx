@@ -72,11 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Souporno Ghosh — People Analytics & Data Strategy" },
+      {
+        name: "description",
+        content:
+          "Portfolio of Souporno Ghosh — People Analytics, Data Strategy, and Product Thinking. MSIM candidate at the University of Washington.",
+      },
+      { name: "author", content: "Souporno Ghosh" },
+      { property: "og:title", content: "Souporno Ghosh — People Analytics & Data Strategy" },
+      {
+        property: "og:description",
+        content: "Turning workforce data into decisions that matter.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
