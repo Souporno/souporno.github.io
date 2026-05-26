@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   ImagePlus,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -160,7 +161,7 @@ const projects: Project[] = [
     tags: ["People Analytics", "Python", "I/O Psychology", "Tableau"],
     categories: ["People Analytics"],
     status: "Ongoing",
-    badge: "Ongoing",
+    badge: "In Progress",
     summary:
       "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data and Latent Profile Analysis to surface distinct career trajectories.",
     sections: [
@@ -319,12 +320,13 @@ const skills = [
   },
 ];
 
-type TabKey = "home" | "work" | "path" | "contact";
+type TabKey = "home" | "work" | "path" | "hobbies" | "contact";
 
 const tabs: { key: TabKey; label: string }[] = [
   { key: "home", label: "Home" },
   { key: "work", label: "Work" },
   { key: "path", label: "Path" },
+  { key: "hobbies", label: "Hobbies" },
   { key: "contact", label: "Contact" },
 ];
 
@@ -338,59 +340,100 @@ const categories: ("All" | Category)[] = [
 
 const timeline = [
   {
-    period: "2017–2021",
-    title: "Bachelor of Engineering — Computer Science",
-    org: "Jadavpur University",
-    location: "Kolkata, India",
-    notes: "Foundations in computer science, data structures, and systems thinking.",
-  },
-  {
-    period: "2021–2022",
-    title: "Research Assistant",
-    org: "CSIR-CGCRI (Council of Scientific & Industrial Research)",
-    location: "Kolkata, India",
+    period: "2016 – 2020",
+    title: "B.Tech — Electronics & Communication Engineering",
+    org: "SRM Institute of Science and Technology",
+    location: "Chennai, India",
     notes:
-      "Supported computational research in a national lab environment. First exposure to data-driven research workflows.",
+      "Built a foundation in engineering systems, electronics, and computational thinking. Graduated June 2020 with GPA 3.2.",
   },
   {
-    period: "2022–2023",
-    title: "Associate Product Manager",
-    org: "Halodoc",
-    location: "Remote / Jakarta",
+    period: "Jan 2021 – Oct 2022",
+    title: "Systems Engineer — Full-Stack Development",
+    org: "Infosys Limited | Client: Apple",
+    location: "Bangalore, India",
     notes:
-      "Worked on product roadmapping and feature prioritization for a healthtech platform serving Southeast Asian markets.",
+      "Built analytics-enabled admin tools in Java and SQL used across 500+ Apple Retail locations globally. Developed REST APIs and Grafana dashboards to improve data flow and system visibility.",
   },
   {
-    period: "2024–Present (June 2026)",
-    title: "Master of Science in Information Management (MSIM)",
+    period: "2022",
+    title: "Infosys Rise Insta Award",
+    org: "Infosys Limited",
+    location: "Bangalore, India",
+    notes:
+      "Recognized with three consecutive quarterly Rise Insta Awards for outstanding performance and impact.",
+  },
+  {
+    period: "Nov 2022 – Oct 2023",
+    title: "Senior Systems Engineer — Site Reliability & Product Development",
+    org: "Infosys Limited | Client: Apple",
+    location: "Bangalore, India",
+    notes:
+      "Led analytics for Apple's Concierge App — owned KPI dashboards in Splunk, built Python/Go data pipelines, improved failure detection speed by 85%. Supported Apple's first retail store launch in India.",
+  },
+  {
+    period: "Nov 2023 – Jul 2024",
+    title: "Associate Consultant — Product & Data Strategy",
+    org: "Infosys Limited | Client: Arizona Public Services",
+    location: "Bangalore, India",
+    notes:
+      "Analyzed multi-system billing and customer datasets in Oracle SQL, improving data accuracy by 35%. Delivered decision-ready analytics for Finance, Operations, and Engineering stakeholders.",
+  },
+  {
+    period: "Sep 2024 – Jun 2026",
+    title: "M.S. in Information Management (GPA: 4.0)",
     org: "University of Washington iSchool",
     location: "Seattle, WA",
     notes:
-      "Specializing in People Analytics and Data Strategy. Coursework: People Analytics, Data Visualization, Product Strategy, Data Warehousing, UX Research.",
+      "Specializations in Program/Product Management Consulting and Data Science. Coursework spanning People Analytics, Data Warehousing, Product Strategy, Data Visualization, and UX Research.",
   },
   {
-    period: "2025 (Fall)",
-    title: "Research Assistant — People Analytics Lab",
+    period: "Jan 2025 – Present",
+    title: "Salesforce Capstone — Product Strategy & AI Workflow Design",
+    org: "University of Washington | Sponsored by Salesforce Workforce Intelligence Team",
+    location: "Seattle, WA",
+    notes:
+      "Led redesign of Salesforce's manager nudging system for people analytics. Designed event-based AI workflow architecture, Slack-based delivery concepts, and a measurement framework tracking engagement and downstream impact.",
+  },
+  {
+    period: "Jul 2025 – Present",
+    title: "Graduate Student Program Coordinator",
+    org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
+    location: "Seattle, WA",
+    notes:
+      "Designed and coordinated programs connecting 15,000+ international and domestic students with institutional resources. Improved program engagement by 35% through user research and feedback loops.",
+  },
+  {
+    period: "Sep 2025 – Present",
+    title: "Graduate Researcher — People Analytics Lab",
     org: "University of Washington",
     location: "Seattle, WA",
     notes:
-      "Generating privacy-safe synthetic organizational data using GANs (CTGAN/SDV) for the UW People Analytics Lab.",
+      "Integrated HRIS, engagement, and performance datasets to build longitudinal workforce cohorts (1,600+ employees). Developed a Performance Archetypes Framework using Python classification and synthetic data generation for workforce segmentation.",
   },
   {
-    period: "2025 (Winter)",
+    period: "Winter 2025",
     title: "3rd Place — Deloitte iEngage People Analytics Case Competition",
     org: "Deloitte × University of Washington",
     location: "Seattle, WA",
     notes:
-      "Designed OkiDoki, an AI-powered burnout detection platform for healthcare workers. SMART KPI framework recognized by Deloitte judges.",
+      "Designed OkiDoki — an AI-powered burnout detection platform for healthcare workers. SMART KPI framework (6 well-being dimensions) recognized and photographed by Deloitte judges.",
   },
   {
-    period: "2025 (Spring)",
+    period: "Spring 2025",
     title: "Best of Quarter — Product Strategy and Leadership",
     org: "University of Washington (IMT 589 B)",
     location: "Seattle, WA",
     notes:
-      "Led strategic product analysis for Workday's global growth. Named best project of the quarter by Prof. Nitin T Bhat.",
+      "Led strategic analysis for Workday's path from $8.45B to $13.22B — APAC expansion, UX overhaul, and outcome-based AI pricing. Named best project of the quarter by Prof. Nitin T Bhat.",
+  },
+  {
+    period: "Jan 2026 – Present",
+    title: "Graduate Teaching Assistant",
+    org: "University of Washington | IMT 550 – Policy and Ethics in Information Management",
+    location: "Seattle, WA",
+    notes:
+      "Evaluated analytical and written coursework and supported ethical reasoning in data-driven decision making for graduate students.",
   },
 ];
 
@@ -427,10 +470,17 @@ function ProjectCard({ project }: { project: Project }) {
   const [open, setOpen] = useState(false);
   const [img, setImg, clearImg] = useProjectImage(project.id);
   const fileRef = useRef<HTMLInputElement>(null);
+  const inProgress = project.badge === "In Progress";
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <article className="group flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/40">
         <div className="relative aspect-[16/9] bg-secondary/60 overflow-hidden">
+          {inProgress && (
+            <span className="absolute top-2 left-2 z-10 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#D4A017]/15 text-[#8a6508] border border-[#D4A017]/40 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D4A017]" />
+              In Progress
+            </span>
+          )}
           {img ? (
             <img src={img} alt={project.title} className="w-full h-full object-cover" />
           ) : (
