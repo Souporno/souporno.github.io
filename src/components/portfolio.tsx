@@ -857,6 +857,26 @@ function PathTab() {
 }
 
 function ContactTab() {
+  return _ContactTab();
+}
+
+function HobbiesTab() {
+  return (
+    <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-24 animate-fade-in">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
+        Life outside work
+      </h2>
+      <p className="font-serif text-4xl md:text-5xl font-medium tracking-tight leading-[1.05]">
+        Beyond the Data
+      </p>
+      <p className="mt-8 italic text-muted-foreground text-base md:text-lg max-w-2xl">
+        Coming soon — check back for what I do when I'm not building dashboards.
+      </p>
+    </div>
+  );
+}
+
+function _ContactTab() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
   const onSubmit = (e: React.FormEvent) => {
