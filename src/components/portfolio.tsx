@@ -52,10 +52,12 @@ type Project = {
 
 const projects: Project[] = [
   {
+    id: "synthetic-gan",
     number: "01",
     title: "Synthetic Data Generation using GANs",
     tagline: "Privacy-safe people analytics through generative models.",
     tags: ["People Analytics", "Machine Learning", "Python"],
+    categories: ["People Analytics", "Data Engineering"],
     status: "Completed",
     summary:
       "Generated statistically faithful synthetic employee survey data for a Colombian construction company — preserving analytical value while protecting individual privacy.",
@@ -86,10 +88,12 @@ const projects: Project[] = [
     ],
   },
   {
+    id: "foodprints",
     number: "02",
     title: "Foodprints — Restaurant Market Intelligence",
     tagline: "Turning 30,000+ Uber Eats records into a market-entry decision tool.",
     tags: ["Data Visualization", "Tableau", "UX Research"],
+    categories: ["Data Visualization"],
     status: "Completed · DATA 511, UW",
     summary:
       "Interactive Tableau dashboard helping aspiring restaurateurs decide where to open, what cuisine to serve, and how to price competitively.",
@@ -118,10 +122,12 @@ const projects: Project[] = [
     tools: "Tableau Public · Python (pandas) · Excel · User research",
   },
   {
+    id: "store-analysis",
     number: "03",
     title: "Store Analysis — Retail Business Intelligence",
     tagline: "An end-to-end BI stack from raw transactions to executive dashboards.",
     tags: ["Data Warehousing", "SQL", "Snowflake", "Tableau"],
+    categories: ["Data Engineering", "Data Visualization"],
     status: "Completed · IMT 577, UW",
     summary:
       "Built a Snowflake warehouse, SQL ETL pipeline, and Tableau dashboard to move a retail chain from ad-hoc reporting to scalable analytics.",
@@ -147,11 +153,14 @@ const projects: Project[] = [
     links: [{ label: "View on GitHub", href: "https://github.com/Souporno/store-analysis" }],
   },
   {
+    id: "openalex",
     number: "04",
     title: "OpenAlex Faculty Trend Analysis + LPA",
     tagline: "Does publication output actually predict academic promotion?",
     tags: ["People Analytics", "Python", "I/O Psychology", "Tableau"],
+    categories: ["People Analytics"],
     status: "Ongoing",
+    badge: "Ongoing",
     summary:
       "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data and Latent Profile Analysis to surface distinct career trajectories.",
     sections: [
@@ -178,13 +187,16 @@ const projects: Project[] = [
     ],
   },
   {
+    id: "okidoki",
     number: "05",
     title: "OkiDoki — Healthcare Worker Well-being Platform",
     tagline: "Detecting burnout before it becomes attrition.",
     tags: ["People Analytics", "Product Design", "Case Competition"],
+    categories: ["People Analytics", "Product Strategy"],
     status: "Deloitte iEngage People Analytics Case Competition, UW",
     featured: true,
     award: "3rd Place — Deloitte iEngage",
+    badge: "🥉 Deloitte iEngage — 3rd Place",
     summary:
       "An AI-powered continuous well-being platform for healthcare workers — combining mood check-ins, passive EHR/HRIS signals, and leadership heatmaps to detect burnout early.",
     sections: [
@@ -213,13 +225,16 @@ const projects: Project[] = [
     team: "Souporno Ghosh, Ananya Sharma, Shanivi Kaul (Team 15: OkiDoki)",
   },
   {
+    id: "workday",
     number: "06",
     title: "Workday — Global Growth Strategy",
     tagline: "From $8.45B to $13.22B by FY2027 — a three-OKR product strategy.",
     tags: ["Product Strategy", "SaaS", "People Analytics"],
+    categories: ["Product Strategy"],
     status: "IMT 589 B · Product Strategy and Leadership, UW",
     featured: true,
     award: "Best of Quarter",
+    badge: "🏆 Best of Quarter — IMT 589 B",
     summary:
       "Full product strategy for Workday: APAC expansion, UX overhaul, and outcome-based AI pricing — backed by 40+ ranked initiatives and a $700M–$1.1B investment thesis.",
     sections: [
