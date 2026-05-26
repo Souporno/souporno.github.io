@@ -12,6 +12,7 @@ import {
   ImagePlus,
   FileText,
 } from "lucide-react";
+import { Paperclip, Download, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -466,11 +467,56 @@ function useProjectImage(id: string): [string | null, (file: File) => void, () =
   return [img, setFromFile, clear];
 }
 
+type Attachment = { id: string; name: string; type: string; dataUrl: string };
+
+function useProjectAttachments(
+  id: string,
+): [Attachment[], (files: FileList | File[]) => void, (attId: string) => void] {
+  const key = `portfolio-files:${id}`;
+  const [items, setItems] = useState<Attachment[]>([]);
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(key);
+      if (v) setItems(JSON.parse(v));
+    } catch {}
+  }, [key]);
+  const persist = (next: Attachment[]) => {
+    setItems(next);
+    try {
+      localStorage.setItem(key, JSON.stringify(next));
+    } catch {}
+  };
+  const add = (files: FileList | File[]) => {
+    const arr = Array.from(files);
+    Promise.all(
+      arr.map(
+        (f) =>
+          new Promise<Attachment>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () =>
+              resolve({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+                name: f.name,
+                type: f.type,
+                dataUrl: reader.result as string,
+              });
+            reader.readAsDataURL(f);
+          }),
+      ),
+    ).then((next) => persist([...items, ...next]));
+  };
+  const remove = (attId: string) => persist(items.filter((a) => a.id !== attId));
+  return [items, add, remove];
+}
+
 function ProjectCard({ project }: { project: Project }) {
   const [open, setOpen] = useState(false);
   const [img, setImg, clearImg] = useProjectImage(project.id);
   const fileRef = useRef<HTMLInputElement>(null);
+  const attachRef = useRef<HTMLInputElement>(null);
+  const [attachments, addAttachments, removeAttachment] = useProjectAttachments(project.id);
   const inProgress = project.badge === "In Progress";
+  const githubLink = project.links?.find((l) => l.href.includes("github.com"));
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <article className="group flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/40">
@@ -558,15 +604,30 @@ function ProjectCard({ project }: { project: Project }) {
           <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
             <DialogTrigger asChild>
               <button className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
-                View case study
+                Learn more
                 <ArrowUpRight className="h-4 w-4" />
               </button>
             </DialogTrigger>
-            {project.featured && (
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/15 border-0">
-                Featured
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {githubLink && (
+                <a
+                  href={githubLink.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-foreground/70 hover:text-primary border border-border hover:border-primary/50 rounded-full px-2.5 py-1 transition-colors"
+                  aria-label="View on GitHub"
+                >
+                  <Github className="h-3.5 w-3.5" />
+                  GitHub
+                </a>
+              )}
+              {project.featured && (
+                <Badge className="bg-primary/10 text-primary hover:bg-primary/15 border-0">
+                  Featured
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </article>
@@ -623,6 +684,79 @@ function ProjectCard({ project }: { project: Project }) {
                   </a>
                 ))}
               </div>
+            )}
+          </div>
+          <div className="border-t border-border pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-primary">
+                Documents &amp; Photos
+              </h4>
+              <button
+                type="button"
+                onClick={() => attachRef.current?.click()}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+              >
+                <Paperclip className="h-3.5 w-3.5" /> Add files
+              </button>
+              <input
+                ref={attachRef}
+                type="file"
+                multiple
+                accept="image/*,application/pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.md"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length) addAttachments(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </div>
+            {attachments.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                No attachments yet. Add supporting documents, slides, or photos for this project.
+              </p>
+            ) : (
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {attachments.map((a) => {
+                  const isImg = a.type.startsWith("image/");
+                  return (
+                    <li
+                      key={a.id}
+                      className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-2"
+                    >
+                      {isImg ? (
+                        <img
+                          src={a.dataUrl}
+                          alt={a.name}
+                          className="h-10 w-10 rounded object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded bg-background flex items-center justify-center flex-shrink-0">
+                          <FileText className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium truncate">{a.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <a
+                            href={a.dataUrl}
+                            download={a.name}
+                            className="text-[11px] text-primary hover:underline inline-flex items-center gap-1"
+                          >
+                            <Download className="h-3 w-3" /> Download
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => removeAttachment(a.id)}
+                            className="text-[11px] text-muted-foreground hover:text-destructive inline-flex items-center gap-1"
+                          >
+                            <Trash2 className="h-3 w-3" /> Remove
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
           </div>
         </div>
