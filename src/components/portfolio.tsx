@@ -167,20 +167,36 @@ const projects: Project[] = [
       "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data and Latent Profile Analysis to surface distinct career trajectories.",
     sections: [
       {
+        heading: "Overview",
+        body: "This ongoing research project investigates a question that sits at the heart of academic career development: does publication output actually predict who gets promoted in academia? Using public scholarly data from the OpenAlex API, I'm building a quantitative picture of faculty career trajectories across top I/O Psychology programs — and applying Latent Profile Analysis (LPA) to uncover distinct patterns in how researchers progress.",
+      },
+      {
         heading: "The Research Question",
-        body: "Does publication output actually predict academic promotion? I'm analyzing 34 I/O Psychology faculty members across 8 R1 universities to find out.",
+        body: "Academia operates on a \"publish or perish\" norm — but how strongly does publication output actually correlate with promotion events in practice? This project examines whether there are measurable differences in publication patterns before and after promotion milestones, and whether faculty cluster into distinct \"career trajectory types\" based on their output over time.",
       },
       {
-        heading: "What I'm Building",
-        body: "Using the OpenAlex API, I retrieve year-by-year publication counts for each faculty member from 2014 to 2026. A Python pipeline matches faculty names to OpenAlex author IDs (with a confidence-scoring system to flag uncertain matches), reshapes the data into a long-format Tableau-ready CSV, and flags promotion events with a Promoted_This_Year indicator. The resulting Tableau dashboard lets users explore publication trajectories by faculty member and institution — with promotion events overlaid as colored dots.",
+        heading: "Scope",
+        body: "• 34 I/O Psychology faculty members across 8 R1 (Research 1) universities\n• Publication data from 2014 to 2026 (year-by-year counts)\n• Promotion events manually identified and flagged per faculty member",
       },
       {
-        heading: "Latent Profile Analysis",
-        body: "Using R, I'm applying LPA to identify distinct career trajectory profiles — clustering researchers by their publication patterns and promotion timelines, rather than treating all faculty as homogeneous.",
+        heading: "What I Built — Data Pipeline (Python + OpenAlex API)",
+        body: "A Python pipeline retrieves year-by-year publication counts for each faculty member from the OpenAlex API. The pipeline includes:\n• A fuzzy name-matching and confidence scoring system to correctly map faculty names to their OpenAlex author IDs (handling ambiguous matches, name variants, and faculty who have published under different affiliations)\n• Automatic reshaping of raw API results into a long-format, Tableau-ready CSV\n• A Promoted_This_Year binary indicator column, allowing promotion events to be overlaid visually on trend lines",
       },
       {
-        heading: "The Bigger Picture",
-        body: "This project explores one of the most understudied dynamics in academia: what does the path to full professor actually look like, quantitatively? The findings could inform graduate students, junior faculty, and departments about the real drivers of academic career progression.",
+        heading: "Tableau Dashboard",
+        body: "An interactive visualization layer that lets users explore:\n• Individual faculty publication trajectories (line chart per person)\n• Colored dots on the timeline indicating promotion events\n• Institution-level comparisons and filters\n• Pre/post-promotion publication trend comparisons",
+      },
+      {
+        heading: "Latent Profile Analysis (R — mclust)",
+        body: "Using the mclust package in R, I'm applying LPA to cluster faculty into distinct career trajectory profiles based on their publication patterns and promotion timelines. Rather than treating all faculty as one homogeneous group, LPA surfaces natural subgroups — for example: \"early peak and plateau,\" \"steady climber,\" \"late bloomer,\" or \"publication burst pre-tenure.\"",
+      },
+      {
+        heading: "Why This Matters",
+        body: "This project explores one of the most understudied dynamics in academia: what does the path to full professor actually look like, quantitatively? The findings could provide:\n• Graduate students and junior faculty with a clearer, data-grounded picture of what academic progression looks like\n• Departments and institutions with benchmarks for evaluating faculty development\n• HR and talent strategy teams in higher education with a replicable methodology for workforce trajectory analysis",
+      },
+      {
+        heading: "Current Status",
+        body: "Active and ongoing. The data pipeline is complete and validated. The Tableau dashboard is in development. LPA modeling is in progress.",
       },
     ],
     tools: "Python (OpenAlex API, pandas) · R (LPA/mclust) · Tableau Public · Excel",
@@ -203,27 +219,47 @@ const projects: Project[] = [
       "An AI-powered continuous well-being platform for healthcare workers — combining mood check-ins, passive EHR/HRIS signals, and leadership heatmaps to detect burnout early.",
     sections: [
       {
+        heading: "Overview",
+        body: "OkiDoki is an AI-powered, continuous well-being platform designed for the U.S. healthcare workforce — built to detect burnout before it becomes attrition, and intervene with precision and empathy. Designed as a case competition entry for the Deloitte iEngage People Analytics Competition, OkiDoki earned 3rd place and was recognized by Deloitte judges for its analytical rigor and SMART KPI framework.",
+      },
+      {
         heading: "The Problem",
-        body: "The U.S. healthcare industry employs over 22 million people — and is facing a quiet crisis. 76% of healthcare workers report mental health symptoms, 44% planned to leave their jobs in 2022, and the industry loses $4.6B annually to burnout-related turnover. Yet most organizations respond with periodic surveys and reactive policies that are too slow and too blunt.",
+        body: "The U.S. healthcare industry employs over 22 million people — and is facing a quiet, growing crisis:\n• 76% of healthcare workers report symptoms of burnout, anxiety, or depression\n• 44% planned to leave their jobs in 2022\n• The industry loses an estimated $4.6 billion annually to burnout-related turnover\n• Most organizations respond with annual surveys and reactive policies — far too slow and too broad to address individual burnout before it turns into resignation\n\nThe existing approach to healthcare worker well-being is fundamentally broken: it measures too late, acts too slowly, and treats a highly heterogeneous workforce as one uniform group.",
       },
       {
         heading: "Our Solution: OkiDoki",
-        body: "A continuous AI-powered well-being platform built for healthcare workers — designed to detect burnout before it becomes attrition, and intervene with precision.",
+        body: "A continuous, AI-powered well-being platform built for healthcare workers — integrating real-time behavioral signals, passive data from clinical systems, and a generative AI wellness assistant into a single platform that gives both workers and hospital leaders the tools to act.",
       },
       {
-        heading: "Key Features",
-        body: "Clinical Shift Mood Check-In/Out (emoji-based, incentivized with wellness points) · Generative AI Wellness Assistant — HIPAA-compliant chatbot for emotional support and burnout-prevention nudges · Passive Data Integration with EHR, HRIS, and scheduling to detect skipped breaks, after-hours charting, and shift overload · Hospital Leadership Dashboard with real-time cohort heatmaps and A/B testing of interventions · Rapid Feedback Capture analyzed for emerging operational stress · SMART KPI Framework: 18 measurable metrics across 6 well-being dimensions.",
+        heading: "Key Feature 1 — Clinical Shift Mood Check-In / Check-Out",
+        body: "Emoji-based mood tracking at the start and end of every shift, taking under 30 seconds. Workers earn wellness points for participation, redeemable for benefits. Check-in data feeds directly into individual and cohort-level risk models.",
       },
       {
-        heading: "Impact Projections",
-        body: "30% reduction in burnout-related turnover · 12× ROI from improved retention and reduced sick leave · 20% boost in wellness program participation.",
+        heading: "Key Feature 2 — Generative AI Wellness Assistant",
+        body: "A HIPAA-compliant conversational chatbot providing:\n• Emotional support and active listening through structured prompts\n• Personalized resource recommendations (EAP referrals, mental health apps, peer support)\n• Burnout-prevention nudges based on shift patterns and mood trends\n• Anonymous escalation pathways for workers in acute distress",
+      },
+      {
+        heading: "Key Feature 3 — Passive Data Integration",
+        body: "OkiDoki syncs with three core enterprise systems — EHR (Electronic Health Records), HRIS, and scheduling platforms — to detect early warning signals without requiring workers to self-report:\n• Skipped break patterns\n• After-hours charting frequency\n• Consecutive shift overloads\n• Sudden schedule change requests",
+      },
+      {
+        heading: "Key Feature 4 — Hospital Leadership Dashboard",
+        body: "A real-time people analytics interface for unit managers and HR leaders:\n• Cohort-level burnout risk heatmaps by unit, shift type, and role\n• Trend lines showing well-being score changes over time\n• A/B testing module for comparing the effectiveness of different wellness interventions\n• Anonymized micro-feedback analysis identifying emerging operational stressors (\"No staff relief in ED today\")",
+      },
+      {
+        heading: "Key Feature 5 — SMART KPI Framework (18 Metrics Across 6 Dimensions)",
+        body: "The centerpiece of our solution — a rigorous measurement system covering:\n• Physical Well-being: shift overload rate, break compliance rate, sick leave frequency\n• Mental & Emotional Well-being: burnout risk index, mood score trend, EAP utilization rate\n• Social Well-being: peer connection index, team cohesion score\n• Financial Well-being: overtime hour ratio, compensation equity index\n• Purpose & Meaning: role clarity score, mission alignment index\n• Growth & Development: training participation rate, promotion pathway clarity\n\nEach KPI is tied to a data source, a measurement frequency, and a clear threshold for action.",
+      },
+      {
+        heading: "Projected Impact",
+        body: "• 30% reduction in burnout-related turnover within 12 months of full deployment\n• 12× ROI from improved retention, reduced sick leave, and lower agency staffing costs\n• 20% boost in wellness program participation through gamified incentives",
       },
       {
         heading: "Recognition",
-        body: "Deloitte judges personally highlighted our SMART KPI framework — Susan Cantrell (Deloitte) photographed our KPI slide to keep. Prof. Richard Sturman and Prof. Heather Whiteman also praised the solution's rigor and practicality.",
+        body: "At the competition presentation, Deloitte judge Susan Cantrell photographed our SMART KPI framework slide to keep as a reference — calling it one of the most rigorous she had seen in the competition. Professor Richard Sturman and Professor Heather Whiteman also praised the solution's analytical depth and practical implementability.\n\nThe SMART KPI framework and phased rollout plan were specifically highlighted as differentiators from other competing teams.",
       },
     ],
-    tools: "Strategic frameworks · Product design · GenAI concepts · HIPAA compliance design",
+    tools: "Product Design · Strategic Frameworks · GenAI Concepts · HIPAA Compliance · SMART KPI Design",
     team: "Souporno Ghosh, Ananya Sharma, Shanivi Kaul (Team 15: OkiDoki)",
   },
   {
@@ -241,28 +277,48 @@ const projects: Project[] = [
       "Full product strategy for Workday: APAC expansion, UX overhaul, and outcome-based AI pricing — backed by 40+ ranked initiatives and a $700M–$1.1B investment thesis.",
     sections: [
       {
+        heading: "Overview",
+        body: "This project delivered a full product strategy for Workday — one of the world's leading enterprise SaaS platforms — addressing its slowing growth trajectory and charting a path from $8.45B to $13.22B in revenue by FY2027. Over the course of a quarter, our six-person team conducted a comprehensive diagnosis of Workday's competitive position, customer segments, and strategic options — and produced a prioritized 3-OKR roadmap backed by rigorous financial modeling and a $700M–$1.1B investment case.\n\nThis project won Best of Quarter in IMT 589 B at the UW iSchool.",
+      },
+      {
         heading: "The Challenge",
-        body: "Workday is a dominant B2B SaaS platform ($8.45B revenue, 60%+ of Fortune 500) — but its growth rate is declining. ~75% of revenue comes from North America, its AI capabilities lack a monetization model, and a complex UX is hurting adoption. The question: how does Workday grow from $8.45B to $13.22B by FY2027?",
+        body: "Workday is a dominant B2B SaaS platform — serving 60%+ of the Fortune 500 with $8.45B in revenue — but facing structural headwinds:\n• Revenue growth is decelerating as North American enterprise market saturation approaches\n• ~75% of revenue is concentrated in North America, with limited international footprint\n• AI capabilities are being added to the product but lack a clear monetization model\n• Complex UX is hurting adoption, driving support costs, and threatening renewal rates as alternatives improve\n• Legacy fixed-subscription pricing doesn't capture the value Workday's AI actually delivers\n\nThe central question: How does Workday grow to $13.22B by FY2027 while protecting its core?",
       },
       {
-        heading: "Our Strategic Response",
-        body: "A full product strategy: current-state diagnosis, competitive landscape (Oracle, SAP, ADP, UKG), customer segmentation, value proposition canvas, and a 3-OKR roadmap with a $700M–$1.1B investment ask.",
+        heading: "Step 1 — Current-State Diagnosis",
+        body: "We mapped Workday's full competitive landscape across four key rivals — Oracle, SAP, ADP, and UKG — evaluating each on feature set, geographic reach, AI capability, pricing model, and enterprise penetration. We identified Workday's core moat (deep HCM + Finance integration, Fortune 500 trust, high switching costs) and its key vulnerabilities (UX complexity, AI monetization gap, APAC underinvestment).",
       },
       {
-        heading: "3 Strategic OKRs",
-        body: "1. APAC Expansion — grow non-NA revenue from 25% to 40% by FY2027, targeting Japan, India, Australia, and Singapore with localized payroll compliance engines.  2. UX Overhaul — reduce user friction by 30%, maintain CSAT above 95% during AI rollouts, cut support interactions by 25% via AI self-service.  3. Outcome-Based Pricing — shift from fixed-entitlement subscriptions to value-aligned tiered pricing where customers pay for measurable business outcomes.",
+        heading: "Step 2 — Customer Segmentation",
+        body: "We segmented Workday's customer base by company size, geography, and function to identify where growth was most accessible. APAC emerged as the highest-opportunity region — significant enterprise demand, low Workday penetration, and regulatory complexity that creates barriers to entry for less-committed competitors.",
       },
       {
-        heading: "Prioritization Rigor",
-        body: "40+ ideas ranked using MoSCoW + ICE scoring. Top initiatives evaluated with NPV, payback period, and build-vs-buy analysis. 3-phase roadmap with milestones from Q2 2025 to 2027+.",
+        heading: "Step 3 — Idea Generation & Prioritization",
+        body: "We generated 40+ strategic initiatives across three domains: geographic expansion, product/UX improvement, and pricing transformation. Each idea was scored using:\n• MoSCoW framework (Must Have / Should Have / Could Have / Won't Have) for strategic necessity\n• ICE scoring (Impact × Confidence × Ease) for execution feasibility\n• NPV analysis and payback period estimates for financial viability\n• Build vs. Buy analysis for capabilities that could be accelerated through acquisition or partnership",
+      },
+      {
+        heading: "OKR 1 — APAC Expansion",
+        body: "Objective: Grow non-North American revenue from 25% to 40% of total revenue by FY2027.\n\nKey Results:\n• Launch localized payroll compliance engines for Japan, India, Australia, and Singapore\n• Establish regional HR ecosystem partnerships in each target market\n• Achieve 200+ net new APAC enterprise customers by FY2026",
+      },
+      {
+        heading: "OKR 2 — UX Overhaul",
+        body: "Objective: Reduce user friction by 30% and protect renewal rates during AI feature rollout.\n\nKey Results:\n• Reduce average task completion time by 30% across core HCM workflows\n• Maintain CSAT above 95% through AI feature rollout phases\n• Cut inbound support interactions by 25% via AI-powered self-service and guided onboarding",
+      },
+      {
+        heading: "OKR 3 — Outcome-Based AI Pricing",
+        body: "Objective: Shift from fixed-entitlement subscriptions to value-aligned, tiered pricing.\n\nKey Results:\n• Launch outcome-based pricing tier where customers pay for measurable AI-driven business outcomes (productivity gains, automation rate, reduced attrition)\n• Pilot with 50 enterprise customers in FY2025, expand to full portfolio by FY2026\n• Increase average contract value (ACV) by 20% through value-based upsells",
+      },
+      {
+        heading: "Investment Case",
+        body: "• Total investment ask: $700M – $1.1B across a 3-phase roadmap (Q2 2025 → 2027+)\n• Phase 1 (Q2–Q4 2025): UX redesign + APAC legal/compliance infrastructure\n• Phase 2 (2026): Outcome-based pricing rollout + APAC go-to-market\n• Phase 3 (2027+): AI platform expansion + ecosystem integrations\n• Projected revenue uplift: +$4.77B by FY2027",
       },
       {
         heading: "Recognition",
-        body: "Named best project of the quarter by Prof. Nitin T Bhat.",
+        body: "Professor Nitin T Bhat named this the best project of the quarter in IMT 589 B — citing the depth of financial modeling, the rigor of the prioritization methodology, and the coherence of the three-OKR narrative as standout qualities relative to other teams.",
       },
     ],
     tools:
-      "Strategic frameworks (MoSCoW, ICE, NPV) · Financial modeling · Competitive analysis · OKR design",
+      "MoSCoW Prioritization · ICE Scoring · NPV/ROI Analysis · OKR Design · Competitive Analysis · Financial Modeling · Value Proposition Canvas",
     team: "Ali Lo, Ishika Johari, Raghav Swaminathan, Sanyam Mehta, Soham Desai, Souporno Ghosh",
   },
 ];
