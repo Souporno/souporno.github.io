@@ -1,7 +1,21 @@
-import { useState } from "react";
-import { Mail, Github, Linkedin, MapPin, ArrowUpRight, ArrowRight, Award } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Mail,
+  Github,
+  Linkedin,
+  MapPin,
+  ArrowUpRight,
+  ArrowRight,
+  Award,
+  Menu,
+  X,
+  ImagePlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -12,14 +26,23 @@ import {
 
 type CaseStudySection = { heading: string; body: string };
 
+type Category =
+  | "People Analytics"
+  | "Data Visualization"
+  | "Product Strategy"
+  | "Data Engineering";
+
 type Project = {
+  id: string;
   number: string;
   title: string;
   tagline: string;
   tags: string[];
+  categories: Category[];
   status: string;
   featured?: boolean;
   award?: string;
+  badge?: string;
   summary: string;
   sections: CaseStudySection[];
   tools: string;
