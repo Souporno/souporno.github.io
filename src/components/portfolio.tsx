@@ -638,7 +638,7 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
       <p className="text-sm font-mono uppercase tracking-widest text-primary mb-6">
         People Analytics · Data Strategy · Product Thinking
       </p>
-      <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-medium leading-[1.05] tracking-tight">
+      <h1 className="font-serif text-5xl md:text-8xl lg:text-9xl font-medium leading-[1.05] tracking-tight">
         Souporno Ghosh
       </h1>
       <p className="mt-6 font-serif text-2xl md:text-3xl text-foreground/90 italic">
@@ -649,7 +649,26 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
         People Analytics, Data &amp; Business Analytics, and Product / Program Management ·
         Graduating June 2026.
       </p>
-      <div className="mt-8 flex flex-wrap items-center gap-4">
+      <div className="mt-8 flex flex-wrap gap-2.5">
+        {[
+          { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/ghosh-souporno/" },
+          { icon: Github, label: "GitHub", href: "https://github.com/Souporno" },
+          { icon: Mail, label: "Email", href: "mailto:souporno@uw.edu" },
+          { icon: FileText, label: "Resume", href: "#" },
+        ].map((p) => (
+          <a
+            key={p.label}
+            href={p.href}
+            target={p.href.startsWith("http") ? "_blank" : undefined}
+            rel={p.href.startsWith("http") ? "noreferrer" : undefined}
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+          >
+            <p.icon className="h-3.5 w-3.5" />
+            {p.label}
+          </a>
+        ))}
+      </div>
+      <div className="mt-6 flex flex-wrap items-center gap-4">
         <Button size="lg" className="rounded-full px-6" onClick={() => go("work")}>
           View my work <ArrowRight className="h-4 w-4" />
         </Button>
