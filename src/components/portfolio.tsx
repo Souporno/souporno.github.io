@@ -1054,14 +1054,206 @@ function HobbiesTab() {
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-24 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
-        Life outside work
+        Life beyond the desk
       </h2>
-      <p className="font-serif text-4xl md:text-5xl font-medium tracking-tight leading-[1.05]">
-        Beyond the Data
+      <p className="font-serif text-4xl md:text-6xl font-medium tracking-tight leading-[1.05]">
+        Designing <span className="italic text-primary">Belonging</span>.
       </p>
-      <p className="mt-8 italic text-muted-foreground text-base md:text-lg max-w-2xl">
-        Coming soon — check back for what I do when I'm not building dashboards.
+      <p className="mt-6 italic text-muted-foreground text-base md:text-lg max-w-3xl leading-relaxed">
+        "The throughline of my time at UW has been closing the gap between resources that
+        exist and people who actually feel supported by them."
       </p>
+
+      <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Card 1 — full-width banner */}
+        <HobbyCard
+          id="hobby-circle"
+          className="md:col-span-2 bg-[#F4EFE5] border-l-4 border-l-primary"
+          icon="🌐"
+          title="Building Community at UW CIRCLE"
+          paragraphs={[
+            "As a Graduate Student Program Coordinator at UW CIRCLE — the Center for International Relations & Cultural Leadership Exchange, often described as a \"home away from home\" for international students — I designed and coordinated programs connecting 15,000+ international and domestic graduate students with institutional resources, leadership development, and cross-cultural engagement.",
+            "I led events ranging from museum visits and cultural outings to professional development workshops and entrepreneurship info sessions. I also organized the International Welcome Program and Fall Welcome Mixer, coordinated Department of Licensing visits for Washington State IDs, wellness sessions with the UW Counseling Center, and an Employment-Based Visa session with immigration attorneys — supporting students navigating some of the most complex transitions of their lives.",
+          ]}
+          quote={`"What made it meaningful was seeing students not just show up, but leave with new connections, clearer direction, and a stronger sense of belonging."`}
+        />
+
+        {/* Card 2 */}
+        <HobbyCard
+          id="hobby-research"
+          icon="📊"
+          title="People Analytics Research Fair"
+          paragraphs={[
+            "In 2026, I presented a research poster at the UW iSchool Research Fair alongside Aswathy, as part of the UW People Analytics Research Lab under Professor Heather Whiteman.",
+            "Our work explored how People Analytics can be a force for good — applying rigorous data and behavioral science to understand how work systems shape employee well-being, performance, and long-term sustainability. My focus: performance trajectories and burnout dynamics — how patterns in employee experience evolve over time, and what they reveal about healthier, more sustainable work systems.",
+          ]}
+          badge="UW iSchool Research Fair · 2026"
+        />
+
+        {/* Card 3 */}
+        <HobbyCard
+          id="hobby-pitch"
+          icon="🚀"
+          title="Startup Pitch Competition & UW Science and Technology Showcase"
+          paragraphs={[
+            "In Dr. Mike Teodorescu's entrepreneurship course, my team took our idea beyond the classroom — placing 2nd in the course startup pitch competition. That placed us among the top 17 teams selected to represent the iSchool and pitch at the University of Washington Science and Technology Showcase.",
+            "That journey — from classroom idea to public pitch stage — changed how I think about innovation. Strong ideas are only the beginning. What matters is whether they can be structured, tested, communicated clearly, and made useful in the real world.",
+          ]}
+          badge="Top 17 Teams · UW Science & Technology Showcase"
+        />
+
+        {/* Card 4 */}
+        <HobbyCard
+          id="hobby-whatsapp"
+          icon="💬"
+          title="The MSIM WhatsApp Community"
+          paragraphs={[
+            "I noticed a gap in the MSIM student experience: there was no fast, informal, peer-centered support channel. Students had questions about coursework, housing, part-time jobs, and logistics — but formal channels were too slow for everyday needs.",
+            "So I created and continue to run an MSIM WhatsApp community. Over time it became a connective layer — cross-sharing resources from CIRCLE, HFS opportunities, event announcements, and peer support in real time.",
+          ]}
+          quote={`"Support and belonging don't happen automatically. They have to be intentionally built and sustained."`}
+        />
+
+        {/* Card 5 */}
+        <HobbyCard
+          id="hobby-teaching"
+          icon="📚"
+          title="Teaching, Grading & Mentoring"
+          paragraphs={[
+            "As a Graduate Teaching Assistant / Reader-Grader for IMT 550 (Policy and Ethics in Information Management) under Professor Jim Loter, I engaged with student writing on ethics, information, and critical reflection.",
+            "As a Student Coordinator at UW HFS, I used relationships with directors and managers to help peers learn about and pursue part-time job opportunities — a meaningful source of stability for students adjusting to a new environment.",
+          ]}
+        />
+
+        {/* Card 6 — closing accent */}
+        <HobbyCard
+          id="hobby-closing"
+          className="md:col-span-2 bg-[#F1DDD2]/60 border-primary/20"
+          icon="✍️"
+          title="If My MSIM Journey Were a Story"
+          paragraphs={[
+            "Its title would be: Designing Belonging.",
+            "I choose this because the throughline has been the effort to close the gap between resources that exist and people who actually feel supported by them. Through CIRCLE, HFS, the WhatsApp community, mentorship, and teaching — I tried to make information more accessible, opportunities more visible, and support more immediate.",
+            "My journey has not only been about what I learned or achieved. It has also been about what I helped build for others, and how I tried to make the MSIM experience more connected, navigable, and genuinely inclusive.",
+          ]}
+          soft
+        />
+      </div>
+
+      <p className="mt-16 text-center italic text-muted-foreground">
+        More to come — I'm always adding.
+      </p>
+    </div>
+  );
+}
+
+function HobbyCard({
+  id,
+  icon,
+  title,
+  paragraphs,
+  quote,
+  badge,
+  className = "",
+  soft = false,
+}: {
+  id: string;
+  icon: string;
+  title: string;
+  paragraphs: string[];
+  quote?: string;
+  badge?: string;
+  className?: string;
+  soft?: boolean;
+}) {
+  const [attachments, addAttachments, removeAttachment] = useProjectAttachments(id);
+  const fileRef = useRef<HTMLInputElement>(null);
+  return (
+    <div
+      className={`group rounded-2xl border bg-card p-7 md:p-8 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30 ${className}`}
+    >
+      <div className="text-3xl mb-4" aria-hidden>
+        {icon}
+      </div>
+      <h3 className="font-serif text-2xl md:text-[1.7rem] font-medium tracking-tight leading-snug">
+        {title}
+      </h3>
+      <div className="mt-4 space-y-3 text-[0.97rem] leading-relaxed text-foreground/80">
+        {paragraphs.map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </div>
+      {quote && (
+        <div
+          className={`mt-5 rounded-lg border-l-2 border-primary/60 ${soft ? "bg-background/60" : "bg-[#F4EFE5]/70"} px-4 py-3 italic text-sm text-foreground/75`}
+        >
+          {quote}
+        </div>
+      )}
+      {badge && (
+        <div className="mt-5">
+          <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+            {badge}
+          </span>
+        </div>
+      )}
+
+      {/* Photo uploads */}
+      <div className="mt-6 pt-5 border-t border-foreground/10">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Photos
+          </span>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors"
+          >
+            <ImagePlus className="h-3.5 w-3.5" /> Add
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.length) addAttachments(e.target.files);
+              e.target.value = "";
+            }}
+          />
+        </div>
+        {attachments.length === 0 ? (
+          <p className="text-xs text-muted-foreground/70 italic">
+            No photos yet — click Add to upload.
+          </p>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {attachments.map((a) => (
+              <div
+                key={a.id}
+                className="group/img relative aspect-square overflow-hidden rounded-md border border-foreground/10"
+              >
+                {a.type.startsWith("image/") ? (
+                  <img src={a.dataUrl} alt={a.name} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeAttachment(a.id)}
+                  className="absolute top-1 right-1 rounded-full bg-background/90 p-1 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-background"
+                  aria-label="Remove"
+                >
+                  <Trash2 className="h-3 w-3 text-foreground/70" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
