@@ -26,6 +26,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type CaseStudySection = { heading: string; body: string };
 
@@ -437,6 +443,8 @@ type TimelineEntry = {
   kind: TimelineKind;
   // sortKey: approximate start date (YYYY-MM) used to order entries vertically.
   sortKey: string;
+  // endKey: approximate end date (YYYY-MM). For achievements, equals sortKey.
+  endKey: string;
   period: string;
   title: string;
   org: string;
@@ -451,6 +459,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "academic",
     sortKey: "2016-09",
+    endKey: "2020-06",
     period: "2016 – 2020",
     title: "B.Tech — Electronics & Communication Engineering",
     org: "SRM Institute of Science and Technology",
@@ -461,6 +470,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "academic",
     sortKey: "2024-09",
+    endKey: "2026-06",
     period: "Sep 2024 – Jun 2026",
     title: "Master of Science in Information Management (GPA: 4.0)",
     org: "University of Washington iSchool",
@@ -472,6 +482,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2021-01",
+    endKey: "2022-10",
     period: "Jan 2021 – Oct 2022",
     title: "Systems Engineer — Full-Stack Development",
     org: "Infosys Limited | Client: Apple",
@@ -482,6 +493,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2022-11",
+    endKey: "2023-10",
     period: "Nov 2022 – Oct 2023",
     title: "Senior Systems Engineer — Site Reliability & Product Development",
     org: "Infosys Limited | Client: Apple",
@@ -492,6 +504,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2023-11",
+    endKey: "2024-07",
     period: "Nov 2023 – Jul 2024",
     title: "Associate Consultant — Product & Data Strategy",
     org: "Infosys Limited | Client: Arizona Public Services",
@@ -502,6 +515,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2025-07",
+    endKey: "2026-03",
     period: "Jul 2025 – Mar 2026",
     title: "Graduate Student Program Coordinator",
     org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
@@ -512,6 +526,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2025-09",
+    endKey: "2026-06",
     period: "Sep 2025 – Present",
     title: "Graduate Researcher — People Analytics Lab",
     org: "University of Washington",
@@ -522,6 +537,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2026-01",
+    endKey: "2026-03",
     period: "Jan 2026 – Mar 2026",
     title: "Graduate Teaching Assistant (Reader/Grader)",
     org: "University of Washington | IMT 550 — Policy and Ethics in Information Management",
@@ -532,6 +548,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2026-01-15",
+    endKey: "2026-06",
     period: "Jan 2026 – Jun 2026",
     title: "Salesforce Capstone — Product Strategy & AI Workflow Design",
     org: "University of Washington | Sponsored by Salesforce Workforce Intelligence Team",
@@ -543,6 +560,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2022-06",
+    endKey: "2022-06",
     period: "2022",
     title: "Infosys Rise Insta Award",
     org: "Infosys Limited",
@@ -553,6 +571,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2025-04",
+    endKey: "2025-04",
     period: "Spring 2025",
     title: "Best of Quarter — Product Strategy and Leadership (IMT 589 B)",
     org: "University of Washington",
@@ -563,6 +582,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2025-11",
+    endKey: "2025-11",
     period: "Fall 2025",
     title: "2nd Place — IMT 598 Startup Pitch Competition",
     org: "University of Washington",
@@ -573,6 +593,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2025-12",
+    endKey: "2025-12",
     period: "Winter 2025",
     title: "3rd Place — Deloitte iEngage People Analytics Case Competition",
     org: "Deloitte × University of Washington",
@@ -583,6 +604,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2026-02",
+    endKey: "2026-02",
     period: "Winter 2026",
     title: "Top 17 Teams — UW Science and Technology Showcase",
     org: "University of Washington",
@@ -920,7 +942,6 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function HomeTab({ go }: { go: (t: TabKey) => void }) {
-  const [expanded, setExpanded] = useState(false);
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-24 pb-16 md:pb-20 animate-fade-in">
       <p className="text-sm font-mono uppercase tracking-widest text-primary mb-6">
@@ -970,66 +991,115 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
         </Button>
       </div>
 
-      <section className="mt-20 md:mt-24 grid grid-cols-12 gap-8 border-t border-border pt-16">
-        <div className="col-span-12 md:col-span-3">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-primary">About</h2>
+      <AboutSection />
+    </div>
+  );
+}
+
+function AboutSection() {
+  const [photo, setPhoto, clearPhoto] = useProjectImage("home-portrait");
+  const photoRef = useRef<HTMLInputElement>(null);
+  return (
+    <section className="mt-20 md:mt-24 grid grid-cols-12 gap-8 md:gap-12 border-t border-border pt-16">
+      <div className="col-span-12 md:col-span-4">
+        <div className="md:sticky md:top-24">
+          <button
+            type="button"
+            onClick={() => photoRef.current?.click()}
+            className="group relative block w-full aspect-[4/5] rounded-2xl overflow-hidden border-2 border-primary/40 bg-secondary/50 shadow-lg shadow-primary/5 hover:border-primary/70 hover:shadow-primary/10 transition-all"
+            aria-label={photo ? "Replace portrait photo" : "Upload portrait photo"}
+          >
+            {photo ? (
+              <img
+                src={photo}
+                alt="Souporno Ghosh"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/70 bg-muted/40">
+                <ImagePlus className="h-10 w-10 mb-2" />
+                <span className="text-xs uppercase tracking-widest">Click to upload photo</span>
+              </div>
+            )}
+            {photo && (
+              <span className="absolute inset-0 flex items-center justify-center bg-foreground/0 group-hover:bg-foreground/30 transition-colors opacity-0 group-hover:opacity-100">
+                <span className="inline-flex items-center gap-2 text-sm font-medium bg-background/90 text-foreground px-3 py-1.5 rounded-full">
+                  <ImagePlus className="h-4 w-4" /> Replace photo
+                </span>
+              </span>
+            )}
+          </button>
+          {photo && (
+            <button
+              type="button"
+              onClick={clearPhoto}
+              className="mt-2 text-xs text-muted-foreground hover:text-destructive"
+            >
+              Remove photo
+            </button>
+          )}
+          <input
+            ref={photoRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) setPhoto(f);
+              e.target.value = "";
+            }}
+          />
         </div>
-        <div className="col-span-12 md:col-span-9 space-y-5 text-lg leading-relaxed text-foreground/85">
+      </div>
+      <div className="col-span-12 md:col-span-8">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">
+          About
+        </h2>
+        <div className="space-y-5 text-lg leading-relaxed text-foreground/85">
           <p>
             My work sits at the intersection of <em>people, data, and strategy</em>. I'm drawn to
             problems where understanding human behavior and organizational dynamics can be
             unlocked through rigorous analysis.
           </p>
-          {expanded ? (
-            <>
-              <p>
-                I come from a background that blends technical depth (Python, SQL, Tableau,
-                synthetic data generation) with product and strategic thinking (OKRs, roadmapping,
-                MoSCoW/ICE prioritization). I'm equally comfortable writing a data pipeline and
-                presenting a business case to executives.
+          <p>
+            I come from a background that blends technical depth (Python, SQL, Tableau,
+            synthetic data generation) with product and strategic thinking (OKRs, roadmapping,
+            MoSCoW/ICE prioritization). I'm equally comfortable writing a data pipeline and
+            presenting a business case to executives.
+          </p>
+          <p>
+            When I'm not building dashboards or wrangling datasets, I'm thinking about the
+            future of work — and how organizations can take better care of the people inside
+            them.
+          </p>
+          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                Looking for
               </p>
-              <p>
-                When I'm not building dashboards or wrangling datasets, I'm thinking about the
-                future of work — and how organizations can take better care of the people inside
-                them.
+              <ul className="space-y-1 text-foreground/80">
+                <li>People / Workforce Analytics</li>
+                <li>Data &amp; Business Analytics</li>
+                <li>Operations Analytics</li>
+                <li>Product / Program Management</li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                Currently
               </p>
-              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Looking for
-                  </p>
-                  <ul className="space-y-1 text-foreground/80">
-                    <li>People / Workforce Analytics</li>
-                    <li>Data &amp; Business Analytics</li>
-                    <li>Operations Analytics</li>
-                    <li>Product / Program Management</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Currently
-                  </p>
-                  <ul className="space-y-1 text-foreground/80">
-                    <li className="inline-flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5" /> Seattle, WA
-                    </li>
-                    <li>MSIM @ UW iSchool</li>
-                    <li>Graduated June 2026</li>
-                  </ul>
-                </div>
-              </div>
-            </>
-          ) : null}
-          <button
-            onClick={() => setExpanded((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-          >
-            {expanded ? "Show less" : "Read more"}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+              <ul className="space-y-1 text-foreground/80">
+                <li className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" /> Seattle, WA
+                </li>
+                <li>MSIM @ UW iSchool</li>
+                <li>Graduated June 2026</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 
@@ -1079,18 +1149,94 @@ function WorkTab() {
 }
 
 function PathTab() {
-  const sorted = [...timeline].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+  return <PathTabInner />;
+}
+
+function TimelineCard({
+  entry,
+  align,
+}: {
+  entry: TimelineEntry;
+  align?: "left" | "right";
+}) {
+  const isProfessional = entry.kind === "professional";
+  const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
+  const hoverBorder = isProfessional
+    ? "hover:border-primary/40"
+    : "hover:border-[#3B6E91]/40";
+  return (
+    <div
+      className={
+        "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
+        hoverBorder +
+        (align === "right" ? " text-left md:text-right" : "")
+      }
+    >
+      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+        {entry.period}
+      </p>
+      <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
+        {entry.title}
+      </h3>
+      <p className={"text-xs mt-1 font-medium " + accent}>{entry.org}</p>
+      {entry.location && (
+        <p
+          className={
+            "text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5 " +
+            (align === "right" ? "md:flex-row-reverse" : "")
+          }
+        >
+          <MapPin className="h-3 w-3" /> {entry.location}
+        </p>
+      )}
+      <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{entry.notes}</p>
+    </div>
+  );
+}
+
+function PathTabInner() {
+  // Convert "YYYY-MM" (or "YYYY-MM-DD") to absolute month index for layout math.
+  const toMonths = (key: string) => {
+    const [y, m] = key.split("-");
+    return parseInt(y, 10) * 12 + (parseInt(m, 10) - 1);
+  };
+  const allMonths = timeline.flatMap((t) => [toMonths(t.sortKey), toMonths(t.endKey)]);
+  const minM = Math.min(...allMonths); // earliest (bottom)
+  const maxM = Math.max(...allMonths); // latest (top)
+  const totalMonths = maxM - minM;
+  const PX_PER_MONTH = 14;
+  const PAD = 24;
+  const trackHeight = totalMonths * PX_PER_MONTH + PAD * 2;
+  // Reversed view: present at top → offsetFromTop(monthIdx) = (maxM - monthIdx) * PX
+  const topFor = (monthIdx: number) => PAD + (maxM - monthIdx) * PX_PER_MONTH;
+
+  // Sort entries newest-first for mobile/list rendering.
+  const sortedDesc = [...timeline].sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+
+  const lanes = {
+    professional: timeline.filter((t) => t.kind === "professional"),
+    academic: timeline.filter((t) => t.kind === "academic"),
+    achievements: timeline.filter((t) => t.kind === "achievement"),
+  };
+
+  // Year gridlines
+  const minYear = Math.floor(minM / 12);
+  const maxYear = Math.floor(maxM / 12);
+  const years: number[] = [];
+  for (let y = maxYear; y >= minYear; y--) years.push(y);
+
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
         My Journey
       </h2>
       <p className="font-serif text-3xl md:text-4xl font-medium tracking-tight">
-        From Chennai to Seattle — a path through engineering, data, and people.
+        From India to the United States — a path through engineering, data, and people.
       </p>
       <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
-        A dual-track view of two parallel lives — work on the left, school on the right —
-        with achievements marked on the spine where they belong in time.
+        A dual-track view of two parallel lives — work on the left, school on the right.
+        Vertical position and bar length are proportional to actual time, so overlapping
+        roles line up visually. Newest at the top.
       </p>
 
       {/* Legend */}
@@ -1109,109 +1255,138 @@ function PathTab() {
         </div>
       </div>
 
-      {/* Dual-track timeline */}
-      <div className="mt-12 relative">
-        {/* Central spine */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-1/2" />
-        <ol className="space-y-8">
-          {sorted.map((t, i) => {
-            if (t.kind === "achievement") {
-              const side = t.connectsTo ?? "none";
-              return (
-                <li
-                  key={t.period + t.title + i}
-                  className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
-                >
-                  {/* Connector line on desktop */}
-                  {side !== "none" && (
-                    <span
-                      className={
-                        "hidden md:block absolute top-1/2 h-px bg-[#D4A017]/60 " +
-                        (side === "left"
-                          ? "right-1/2 mr-3 w-10"
-                          : "left-1/2 ml-3 w-10")
-                      }
-                    />
-                  )}
-                  {/* Centered achievement pill */}
-                  <div className="md:col-span-2 flex md:justify-center pl-12 md:pl-0">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#D4A017]/50 bg-[#D4A017]/10 text-[#7a5a0a] px-3.5 py-1.5 shadow-sm relative md:z-10">
-                      <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017] shrink-0" />
-                      <div className="text-left">
-                        <p className="text-[10px] font-mono uppercase tracking-widest text-[#7a5a0a]/80">
-                          {t.period}
-                        </p>
-                        <p className="text-xs font-semibold leading-tight">{t.title}</p>
-                        <p className="text-[11px] text-foreground/70 leading-snug mt-0.5 max-w-md">
-                          {t.notes}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Spine dot */}
-                  <span className="absolute left-4 md:left-1/2 top-3 md:top-1/2 h-2.5 w-2.5 rounded-full bg-[#D4A017] ring-4 ring-background -translate-x-1/2 md:-translate-y-1/2" />
-                </li>
-              );
-            }
+      {/* MOBILE: simple stacked list (newest first) */}
+      <ol className="md:hidden mt-10 space-y-6 relative">
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
+        {sortedDesc.map((t, i) => (
+          <li key={t.period + t.title + i} className="relative pl-12">
+            <span
+              className={
+                "absolute left-4 top-3 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
+                (t.kind === "professional"
+                  ? "bg-primary"
+                  : t.kind === "academic"
+                  ? "bg-[#3B6E91]"
+                  : "bg-[#D4A017]")
+              }
+            />
+            <TimelineCard entry={t} />
+          </li>
+        ))}
+      </ol>
 
-            const isProfessional = t.kind === "professional";
-            const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
-            const dotColor = isProfessional ? "bg-primary" : "bg-[#3B6E91]";
-            const hoverBorder = isProfessional
-              ? "hover:border-primary/40"
-              : "hover:border-[#3B6E91]/40";
+      {/* DESKTOP: Gantt-proportional dual-track timeline */}
+      <TooltipProvider delayDuration={150}>
+        <div
+          className="hidden md:block mt-12 relative"
+          style={{ height: trackHeight }}
+        >
+          {/* Central spine */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
 
-            const card = (
-              <div
-                className={
-                  "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
-                  hoverBorder
-                }
-              >
-                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-                  {t.period}
-                </p>
-                <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
-                  {t.title}
-                </h3>
-                <p className={"text-xs mt-1 font-medium " + accent}>{t.org}</p>
-                {t.location && (
-                  <p className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
-                    <MapPin className="h-3 w-3" /> {t.location}
-                  </p>
-                )}
-                <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{t.notes}</p>
+          {/* Year gridlines + labels */}
+          {years.map((y) => {
+            const top = topFor(y * 12);
+            return (
+              <div key={y} className="absolute left-0 right-0" style={{ top }}>
+                <div className="absolute left-0 right-0 h-px bg-border/40" />
+                <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/70">
+                  {y}
+                </span>
               </div>
             );
+          })}
 
+          {/* Professional lane (left) */}
+          {lanes.professional.map((t, i) => {
+            const startM = toMonths(t.sortKey);
+            const endM = toMonths(t.endKey);
+            const barTop = topFor(endM);
+            const barHeight = Math.max(8, (endM - startM) * PX_PER_MONTH);
             return (
-              <li
-                key={t.period + t.title + i}
-                className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
-              >
-                {/* Spine dot */}
-                <span
-                  className={
-                    "absolute left-4 md:left-1/2 top-4 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
-                    dotColor
-                  }
+              <div key={"p" + i}>
+                {/* Duration bar on spine side */}
+                <div
+                  className="absolute rounded-full bg-primary/70"
+                  style={{
+                    top: barTop,
+                    height: barHeight,
+                    width: 4,
+                    left: "calc(50% - 8px)",
+                  }}
                 />
-                {isProfessional ? (
-                  <>
-                    <div className="pl-12 md:pl-0 md:pr-2">{card}</div>
-                    <div className="hidden md:block" />
-                  </>
-                ) : (
-                  <>
-                    <div className="hidden md:block" />
-                    <div className="pl-12 md:pl-2">{card}</div>
-                  </>
-                )}
-              </li>
+                {/* Card aligned to bar top */}
+                <div
+                  className="absolute pr-8"
+                  style={{ top: barTop, left: 0, width: "calc(50% - 14px)" }}
+                >
+                  <TimelineCard entry={t} align="right" />
+                </div>
+              </div>
             );
           })}
-        </ol>
-      </div>
+
+          {/* Academic lane (right) */}
+          {lanes.academic.map((t, i) => {
+            const startM = toMonths(t.sortKey);
+            const endM = toMonths(t.endKey);
+            const barTop = topFor(endM);
+            const barHeight = Math.max(8, (endM - startM) * PX_PER_MONTH);
+            return (
+              <div key={"a" + i}>
+                <div
+                  className="absolute rounded-full bg-[#3B6E91]/70"
+                  style={{
+                    top: barTop,
+                    height: barHeight,
+                    width: 4,
+                    left: "calc(50% + 4px)",
+                  }}
+                />
+                <div
+                  className="absolute pl-8"
+                  style={{ top: barTop, right: 0, width: "calc(50% - 14px)" }}
+                >
+                  <TimelineCard entry={t} align="left" />
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Achievement markers on spine — compact pills with tooltip */}
+          {lanes.achievements.map((t, i) => {
+            const top = topFor(toMonths(t.sortKey));
+            return (
+              <div
+                key={"ach" + i}
+                className="absolute left-1/2 -translate-x-1/2 z-10"
+                style={{ top: top - 14 }}
+              >
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#D4A017]/60 bg-[#FBF3D9] text-[#7a5a0a] px-2.5 py-1 shadow-sm hover:bg-[#F5E7B4] transition-colors max-w-[280px]"
+                    >
+                      <Star className="h-3 w-3 text-[#D4A017] fill-[#D4A017] shrink-0" />
+                      <span className="text-[11px] font-semibold leading-none truncate">
+                        {t.title}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs text-left">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+                      {t.period}
+                    </p>
+                    <p className="text-xs font-semibold mb-1">{t.title}</p>
+                    <p className="text-[11px] text-foreground/85 leading-snug">{t.notes}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            );
+          })}
+        </div>
+      </TooltipProvider>
 
       <section className="mt-20 border-t border-border pt-16">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
