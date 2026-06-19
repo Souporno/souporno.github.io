@@ -443,6 +443,8 @@ type TimelineEntry = {
   kind: TimelineKind;
   // sortKey: approximate start date (YYYY-MM) used to order entries vertically.
   sortKey: string;
+  // endKey: approximate end date (YYYY-MM). For achievements, equals sortKey.
+  endKey: string;
   period: string;
   title: string;
   org: string;
