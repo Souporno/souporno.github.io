@@ -158,14 +158,14 @@ const projects: Project[] = [
   {
     id: "openalex",
     number: "04",
-    title: "OpenAlex Faculty Trend Analysis + LPA",
+    title: "OpenAlex Faculty Trend Analysis (LPA + LGCA)",
     tagline: "Does publication output actually predict academic promotion?",
     tags: ["People Analytics", "Python", "I/O Psychology", "Tableau"],
     categories: ["People Analytics"],
     status: "Ongoing",
     badge: "In Progress",
     summary:
-      "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data and Latent Profile Analysis to surface distinct career trajectories.",
+      "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data, Latent Profile Analysis, and Latent Growth Curve Analysis to surface distinct career trajectories.",
     sections: [
       {
         heading: "Overview",
@@ -188,8 +188,8 @@ const projects: Project[] = [
         body: "An interactive visualization layer that lets users explore:\n• Individual faculty publication trajectories (line chart per person)\n• Colored dots on the timeline indicating promotion events\n• Institution-level comparisons and filters\n• Pre/post-promotion publication trend comparisons",
       },
       {
-        heading: "Latent Profile Analysis (R — mclust)",
-        body: "Using the mclust package in R, I'm applying LPA to cluster faculty into distinct career trajectory profiles based on their publication patterns and promotion timelines. Rather than treating all faculty as one homogeneous group, LPA surfaces natural subgroups — for example: \"early peak and plateau,\" \"steady climber,\" \"late bloomer,\" or \"publication burst pre-tenure.\"",
+        heading: "Latent Profile Analysis (LPA) + Latent Growth Curve Analysis (LGCA)",
+        body: "Using R, I apply Latent Profile Analysis to identify distinct career trajectory profiles among faculty — clustering researchers by publication patterns and promotion timelines rather than treating all faculty as one homogeneous group. I've since extended this work with Latent Growth Curve Analysis (LGCA), which models individual trajectories of publication output over time as continuous growth curves — capturing not just which 'type' of researcher someone is, but the shape, rate, and trajectory of their academic productivity across their career. Together, LPA and LGCA provide both a categorical and a continuous lens on faculty career development.",
       },
       {
         heading: "Why This Matters",
@@ -200,9 +200,12 @@ const projects: Project[] = [
         body: "Active and ongoing. The data pipeline is complete and validated. The Tableau dashboard is in development. LPA modeling is in progress.",
       },
     ],
-    tools: "Python (OpenAlex API, pandas) · R (LPA/mclust) · Tableau Public · Excel",
+    tools: "Python (OpenAlex API, pandas) · R (LPA/mclust, LGCA) · Tableau Public · Excel",
     links: [
-      { label: "View on GitHub", href: "https://github.com/Souporno/OpenAlex-Faculty-Trend" },
+      {
+        label: "View on GitHub",
+        href: "https://github.com/Souporno/OpenAlex-Faculty-Trend/tree/main/Latent%20Growth%20Curve%20Analysis",
+      },
     ],
   },
   {
