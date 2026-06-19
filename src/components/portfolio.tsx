@@ -11,6 +11,7 @@ import {
   X,
   ImagePlus,
   FileText,
+  Star,
 } from "lucide-react";
 import { Paperclip, Download, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -157,14 +158,14 @@ const projects: Project[] = [
   {
     id: "openalex",
     number: "04",
-    title: "OpenAlex Faculty Trend Analysis + LPA",
+    title: "OpenAlex Faculty Trend Analysis (LPA + LGCA)",
     tagline: "Does publication output actually predict academic promotion?",
     tags: ["People Analytics", "Python", "I/O Psychology", "Tableau"],
     categories: ["People Analytics"],
     status: "Ongoing",
     badge: "In Progress",
     summary:
-      "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data and Latent Profile Analysis to surface distinct career trajectories.",
+      "Analyzing 34 I/O Psychology faculty across 8 R1 universities — using OpenAlex publication data, Latent Profile Analysis, and Latent Growth Curve Analysis to surface distinct career trajectories.",
     sections: [
       {
         heading: "Overview",
@@ -187,8 +188,8 @@ const projects: Project[] = [
         body: "An interactive visualization layer that lets users explore:\n• Individual faculty publication trajectories (line chart per person)\n• Colored dots on the timeline indicating promotion events\n• Institution-level comparisons and filters\n• Pre/post-promotion publication trend comparisons",
       },
       {
-        heading: "Latent Profile Analysis (R — mclust)",
-        body: "Using the mclust package in R, I'm applying LPA to cluster faculty into distinct career trajectory profiles based on their publication patterns and promotion timelines. Rather than treating all faculty as one homogeneous group, LPA surfaces natural subgroups — for example: \"early peak and plateau,\" \"steady climber,\" \"late bloomer,\" or \"publication burst pre-tenure.\"",
+        heading: "Latent Profile Analysis (LPA) + Latent Growth Curve Analysis (LGCA)",
+        body: "Using R, I apply Latent Profile Analysis to identify distinct career trajectory profiles among faculty — clustering researchers by publication patterns and promotion timelines rather than treating all faculty as one homogeneous group. I've since extended this work with Latent Growth Curve Analysis (LGCA), which models individual trajectories of publication output over time as continuous growth curves — capturing not just which 'type' of researcher someone is, but the shape, rate, and trajectory of their academic productivity across their career. Together, LPA and LGCA provide both a categorical and a continuous lens on faculty career development.",
       },
       {
         heading: "Why This Matters",
@@ -199,9 +200,12 @@ const projects: Project[] = [
         body: "Active and ongoing. The data pipeline is complete and validated. The Tableau dashboard is in development. LPA modeling is in progress.",
       },
     ],
-    tools: "Python (OpenAlex API, pandas) · R (LPA/mclust) · Tableau Public · Excel",
+    tools: "Python (OpenAlex API, pandas) · R (LPA/mclust, LGCA) · Tableau Public · Excel",
     links: [
-      { label: "View on GitHub", href: "https://github.com/Souporno/OpenAlex-Faculty-Trend" },
+      {
+        label: "View on GitHub",
+        href: "https://github.com/Souporno/OpenAlex-Faculty-Trend/tree/main/Latent%20Growth%20Curve%20Analysis",
+      },
     ],
   },
   {
@@ -321,6 +325,39 @@ const projects: Project[] = [
       "MoSCoW Prioritization · ICE Scoring · NPV/ROI Analysis · OKR Design · Competitive Analysis · Financial Modeling · Value Proposition Canvas",
     team: "Ali Lo, Ishika Johari, Raghav Swaminathan, Sanyam Mehta, Soham Desai, Souporno Ghosh",
   },
+  {
+    id: "elderease",
+    number: "07",
+    title: "ElderEase — On-Demand Non-Medical Senior Care Platform",
+    tagline: "A single platform for everyday non-medical senior care.",
+    tags: ["Product Strategy", "Market Sizing", "Entrepreneurship"],
+    categories: ["Product Strategy"],
+    status: "IMT 598 · Entrepreneurship, UW",
+    featured: true,
+    badge: "Top 17 Teams — UW Science & Technology Showcase 2026",
+    summary:
+      "A single, on-demand platform for everyday non-medical senior care — built from a classroom idea into a top-17 pitch at UW's Science and Technology Showcase.",
+    sections: [
+      {
+        heading: "The Problem",
+        body: "The U.S. non-medical home care market is projected to reach $273.6B by 2029. 77% of seniors want to age in place — yet families are left juggling fragmented services with little visibility or trust in who is actually providing care.",
+      },
+      {
+        heading: "What We Built",
+        body: "ElderEase: a single, on-demand platform for everyday non-medical support, designed for both seniors and the families coordinating their care. The platform connects families to vetted caregivers for daily living support, companionship, errands, and household help — removing the fragmentation and trust gap in today's home care market.",
+      },
+      {
+        heading: "My Approach",
+        body: "Over several weeks, our team went deep into:\n• Customer personas and real-world use cases for both seniors and adult-children decision-makers\n• Unit economics and pricing — a $35/hour service model\n• Market sizing — a Total Addressable Market (TAM) of approximately $191B, with a clear path to serviceable markets\n• Competitive differentiation in a space that already has strong incumbent players",
+      },
+      {
+        heading: "Outcome",
+        body: "What started as a class project in Dr. Mike Teodorescu's Entrepreneurship course (IMT 598) — where our team placed 2nd in the startup pitch competition — became something bigger. We refined the idea and were selected as one of the top 17 teams to pitch ElderEase at the University of Washington's 2026 Science and Technology Showcase, the 20th annual event co-hosted by the Science & Engineering Business Association (SEBA) and the Foster School's Buerk Center for Entrepreneurship.\n\nPitching in front of experienced judges pushed us beyond \"good idea\" into clear thinking, structured storytelling, and defensible logic — and changed how I think about building: not just what sounds good, but what actually works in the real world.",
+      },
+    ],
+    tools: "Market Sizing · Unit Economics · Customer Personas · Pitch Development",
+    team: "Souporno Ghosh, Ananya Sharma, Mathew Jerry Meleth, Shanivi Kaul",
+  },
 ];
 
 const skills = [
@@ -395,8 +432,25 @@ const categories: ("All" | Category)[] = [
   "Data Engineering",
 ];
 
-const timeline = [
+type TimelineKind = "professional" | "academic" | "achievement";
+type TimelineEntry = {
+  kind: TimelineKind;
+  // sortKey: approximate start date (YYYY-MM) used to order entries vertically.
+  sortKey: string;
+  period: string;
+  title: string;
+  org: string;
+  location?: string;
+  notes: string;
+  // For achievements: which side the marker connects to.
+  connectsTo?: "left" | "right" | "none";
+};
+
+const timeline: TimelineEntry[] = [
+  // Academic
   {
+    kind: "academic",
+    sortKey: "2016-09",
     period: "2016 – 2020",
     title: "B.Tech — Electronics & Communication Engineering",
     org: "SRM Institute of Science and Technology",
@@ -405,6 +459,19 @@ const timeline = [
       "Built a foundation in engineering systems, electronics, and computational thinking. Graduated June 2020 with GPA 3.2.",
   },
   {
+    kind: "academic",
+    sortKey: "2024-09",
+    period: "Sep 2024 – Jun 2026",
+    title: "Master of Science in Information Management (GPA: 4.0)",
+    org: "University of Washington iSchool",
+    location: "Seattle, WA",
+    notes:
+      "Specializations in Program/Product Management Consulting and Data Science. Coursework spanning People Analytics, Data Warehousing, Product Strategy, Data Visualization, and UX Research. Graduated June 2026.",
+  },
+  // Professional
+  {
+    kind: "professional",
+    sortKey: "2021-01",
     period: "Jan 2021 – Oct 2022",
     title: "Systems Engineer — Full-Stack Development",
     org: "Infosys Limited | Client: Apple",
@@ -413,14 +480,8 @@ const timeline = [
       "Built analytics-enabled admin tools in Java and SQL used across 500+ Apple Retail locations globally. Developed REST APIs and Grafana dashboards to improve data flow and system visibility.",
   },
   {
-    period: "2022",
-    title: "Infosys Rise Insta Award",
-    org: "Infosys Limited",
-    location: "Bangalore, India",
-    notes:
-      "Recognized with three consecutive quarterly Rise Insta Awards for outstanding performance and impact.",
-  },
-  {
+    kind: "professional",
+    sortKey: "2022-11",
     period: "Nov 2022 – Oct 2023",
     title: "Senior Systems Engineer — Site Reliability & Product Development",
     org: "Infosys Limited | Client: Apple",
@@ -429,6 +490,8 @@ const timeline = [
       "Led analytics for Apple's Concierge App — owned KPI dashboards in Splunk, built Python/Go data pipelines, improved failure detection speed by 85%. Supported Apple's first retail store launch in India.",
   },
   {
+    kind: "professional",
+    sortKey: "2023-11",
     period: "Nov 2023 – Jul 2024",
     title: "Associate Consultant — Product & Data Strategy",
     org: "Infosys Limited | Client: Arizona Public Services",
@@ -437,60 +500,95 @@ const timeline = [
       "Analyzed multi-system billing and customer datasets in Oracle SQL, improving data accuracy by 35%. Delivered decision-ready analytics for Finance, Operations, and Engineering stakeholders.",
   },
   {
-    period: "Sep 2024 – Jun 2026",
-    title: "M.S. in Information Management (GPA: 4.0)",
-    org: "University of Washington iSchool",
+    kind: "professional",
+    sortKey: "2025-07",
+    period: "Jul 2025 – Mar 2026",
+    title: "Graduate Student Program Coordinator",
+    org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
     location: "Seattle, WA",
     notes:
-      "Specializations in Program/Product Management Consulting and Data Science. Coursework spanning People Analytics, Data Warehousing, Product Strategy, Data Visualization, and UX Research.",
+      "Designed and coordinated programs connecting 15,000+ international and domestic students with institutional resources, leadership development, and cross-cultural engagement. Led the International Welcome Program, Fall Welcome Mixer, DOL ID visits, wellness sessions, and an Employment-Based Visa info session. Improved program engagement by 35% through user research and feedback loops.",
   },
   {
-    period: "Jan 2025 – Present",
+    kind: "professional",
+    sortKey: "2025-09",
+    period: "Sep 2025 – Present",
+    title: "Graduate Researcher — People Analytics Lab",
+    org: "University of Washington",
+    location: "Seattle, WA",
+    notes:
+      "Integrated HRIS, engagement, and performance datasets to build longitudinal workforce cohorts (1,600+ employees). Developed a Performance Archetypes Framework using Python classification and synthetic data generation for workforce segmentation. Supported by a People Analytics Research stipend from the iSchool Workforce Systems Innovation Term Fund (Winter–Spring 2026), conducting applied research under Dr. Heather Whiteman.",
+  },
+  {
+    kind: "professional",
+    sortKey: "2026-01",
+    period: "Jan 2026 – Mar 2026",
+    title: "Graduate Teaching Assistant (Reader/Grader)",
+    org: "University of Washington | IMT 550 — Policy and Ethics in Information Management",
+    location: "Seattle, WA",
+    notes:
+      "Prepared course materials, evaluated assignments and exams, and maintained grading records for Professor Jim Loter's course. Supported ethical reasoning and critical reflection in student writing on information policy and ethics.",
+  },
+  {
+    kind: "professional",
+    sortKey: "2026-01-15",
+    period: "Jan 2026 – Jun 2026",
     title: "Salesforce Capstone — Product Strategy & AI Workflow Design",
     org: "University of Washington | Sponsored by Salesforce Workforce Intelligence Team",
     location: "Seattle, WA",
     notes:
       "Led redesign of Salesforce's manager nudging system for people analytics. Designed event-based AI workflow architecture, Slack-based delivery concepts, and a measurement framework tracking engagement and downstream impact.",
   },
+  // Achievements
   {
-    period: "Jul 2025 – Present",
-    title: "Graduate Student Program Coordinator",
-    org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
-    location: "Seattle, WA",
+    kind: "achievement",
+    sortKey: "2022-06",
+    period: "2022",
+    title: "Infosys Rise Insta Award",
+    org: "Infosys Limited",
     notes:
-      "Designed and coordinated programs connecting 15,000+ international and domestic students with institutional resources. Improved program engagement by 35% through user research and feedback loops.",
+      "Recognized with three consecutive quarterly Rise Insta Awards for outstanding performance and impact.",
+    connectsTo: "left",
   },
   {
-    period: "Sep 2025 – Present",
-    title: "Graduate Researcher — People Analytics Lab",
+    kind: "achievement",
+    sortKey: "2025-04",
+    period: "Spring 2025",
+    title: "Best of Quarter — Product Strategy and Leadership (IMT 589 B)",
     org: "University of Washington",
-    location: "Seattle, WA",
     notes:
-      "Integrated HRIS, engagement, and performance datasets to build longitudinal workforce cohorts (1,600+ employees). Developed a Performance Archetypes Framework using Python classification and synthetic data generation for workforce segmentation.",
+      "Led strategic analysis for Workday's global growth strategy. Named best project of the quarter by Prof. Nitin T Bhat.",
+    connectsTo: "right",
   },
   {
+    kind: "achievement",
+    sortKey: "2025-11",
+    period: "Fall 2025",
+    title: "2nd Place — IMT 598 Startup Pitch Competition",
+    org: "University of Washington",
+    notes:
+      "Placed 2nd in the startup pitch competition in Dr. Mike Teodorescu's Entrepreneurship course with teammates Ananya Sharma, Mathew Jerry Meleth, and Shanivi Kaul — the seed of what became ElderEase.",
+    connectsTo: "none",
+  },
+  {
+    kind: "achievement",
+    sortKey: "2025-12",
     period: "Winter 2025",
     title: "3rd Place — Deloitte iEngage People Analytics Case Competition",
     org: "Deloitte × University of Washington",
-    location: "Seattle, WA",
     notes:
-      "Designed OkiDoki — an AI-powered burnout detection platform for healthcare workers. SMART KPI framework (6 well-being dimensions) recognized and photographed by Deloitte judges.",
+      "Designed OkiDoki, an AI-powered burnout detection platform for healthcare workers. SMART KPI framework recognized by Deloitte judges.",
+    connectsTo: "left",
   },
   {
-    period: "Spring 2025",
-    title: "Best of Quarter — Product Strategy and Leadership",
-    org: "University of Washington (IMT 589 B)",
-    location: "Seattle, WA",
+    kind: "achievement",
+    sortKey: "2026-02",
+    period: "Winter 2026",
+    title: "Top 17 Teams — UW Science and Technology Showcase",
+    org: "University of Washington",
     notes:
-      "Led strategic analysis for Workday's path from $8.45B to $13.22B — APAC expansion, UX overhaul, and outcome-based AI pricing. Named best project of the quarter by Prof. Nitin T Bhat.",
-  },
-  {
-    period: "Jan 2026 – Present",
-    title: "Graduate Teaching Assistant",
-    org: "University of Washington | IMT 550 – Policy and Ethics in Information Management",
-    location: "Seattle, WA",
-    notes:
-      "Evaluated analytical and written coursework and supported ethical reasoning in data-driven decision making for graduate students.",
+      "Selected as one of the top 17 teams to pitch ElderEase at the University of Washington's 2026 Science and Technology Showcase, the 20th annual event co-hosted by SEBA and the Foster School's Buerk Center for Entrepreneurship.",
+    connectsTo: "none",
   },
 ];
 
@@ -835,9 +933,9 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
         Turning workforce data into decisions that matter.
       </p>
       <p className="mt-6 max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed">
-        MSIM candidate at the University of Washington · Open to full-time opportunities in
+        MSIM graduate of the University of Washington · Open to full-time opportunities in
         People Analytics, Data &amp; Business Analytics, and Product / Program Management ·
-        Graduating June 2026.
+        Graduated June 2026.
       </p>
       <div className="mt-8 flex flex-wrap gap-2.5">
         {[
@@ -916,7 +1014,7 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
                       <MapPin className="h-3.5 w-3.5" /> Seattle, WA
                     </li>
                     <li>MSIM @ UW iSchool</li>
-                    <li>Graduating June 2026</li>
+                    <li>Graduated June 2026</li>
                   </ul>
                 </div>
               </div>
@@ -981,6 +1079,7 @@ function WorkTab() {
 }
 
 function PathTab() {
+  const sorted = [...timeline].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
@@ -989,31 +1088,128 @@ function PathTab() {
       <p className="font-serif text-3xl md:text-4xl font-medium tracking-tight">
         From Chennai to Seattle — a path through engineering, data, and people.
       </p>
+      <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
+        A dual-track view of two parallel lives — work on the left, school on the right —
+        with achievements marked on the spine where they belong in time.
+      </p>
 
+      {/* Legend */}
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs">
+        <div className="inline-flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+          <span className="text-foreground/80 font-medium">Professional Experience</span>
+        </div>
+        <div className="inline-flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3B6E91]" />
+          <span className="text-foreground/80 font-medium">Academic</span>
+        </div>
+        <div className="inline-flex items-center gap-2">
+          <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017]" />
+          <span className="text-foreground/80 font-medium">Achievement / Recognition</span>
+        </div>
+      </div>
+
+      {/* Dual-track timeline */}
       <div className="mt-12 relative">
-        <div className="absolute left-3 md:left-[140px] top-2 bottom-2 w-px bg-border" />
-        <ol className="space-y-10">
-          {timeline.map((t) => (
-            <li key={t.period + t.title} className="relative grid grid-cols-[1fr] md:grid-cols-[140px_1fr] gap-4 md:gap-10">
-              <div className="hidden md:block text-sm font-mono uppercase tracking-widest text-muted-foreground pt-1">
-                {t.period}
-              </div>
-              <div className="relative pl-10 md:pl-8">
-                <span className="absolute left-1.5 md:-left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-background" />
-                <p className="md:hidden text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
+        {/* Central spine */}
+        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-1/2" />
+        <ol className="space-y-8">
+          {sorted.map((t, i) => {
+            if (t.kind === "achievement") {
+              const side = t.connectsTo ?? "none";
+              return (
+                <li
+                  key={t.period + t.title + i}
+                  className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
+                >
+                  {/* Connector line on desktop */}
+                  {side !== "none" && (
+                    <span
+                      className={
+                        "hidden md:block absolute top-1/2 h-px bg-[#D4A017]/60 " +
+                        (side === "left"
+                          ? "right-1/2 mr-3 w-10"
+                          : "left-1/2 ml-3 w-10")
+                      }
+                    />
+                  )}
+                  {/* Centered achievement pill */}
+                  <div className="md:col-span-2 flex md:justify-center pl-12 md:pl-0">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[#D4A017]/50 bg-[#D4A017]/10 text-[#7a5a0a] px-3.5 py-1.5 shadow-sm relative md:z-10">
+                      <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017] shrink-0" />
+                      <div className="text-left">
+                        <p className="text-[10px] font-mono uppercase tracking-widest text-[#7a5a0a]/80">
+                          {t.period}
+                        </p>
+                        <p className="text-xs font-semibold leading-tight">{t.title}</p>
+                        <p className="text-[11px] text-foreground/70 leading-snug mt-0.5 max-w-md">
+                          {t.notes}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Spine dot */}
+                  <span className="absolute left-4 md:left-1/2 top-3 md:top-1/2 h-2.5 w-2.5 rounded-full bg-[#D4A017] ring-4 ring-background -translate-x-1/2 md:-translate-y-1/2" />
+                </li>
+              );
+            }
+
+            const isProfessional = t.kind === "professional";
+            const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
+            const dotColor = isProfessional ? "bg-primary" : "bg-[#3B6E91]";
+            const hoverBorder = isProfessional
+              ? "hover:border-primary/40"
+              : "hover:border-[#3B6E91]/40";
+
+            const card = (
+              <div
+                className={
+                  "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
+                  hoverBorder
+                }
+              >
+                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
                   {t.period}
                 </p>
-                <div className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40">
-                  <h3 className="font-serif text-lg md:text-xl font-medium">{t.title}</h3>
-                  <p className="text-sm text-primary mt-1">{t.org}</p>
-                  <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-0.5">
+                <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
+                  {t.title}
+                </h3>
+                <p className={"text-xs mt-1 font-medium " + accent}>{t.org}</p>
+                {t.location && (
+                  <p className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
                     <MapPin className="h-3 w-3" /> {t.location}
                   </p>
-                  <p className="mt-3 text-sm text-foreground/85 leading-relaxed">{t.notes}</p>
-                </div>
+                )}
+                <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{t.notes}</p>
               </div>
-            </li>
-          ))}
+            );
+
+            return (
+              <li
+                key={t.period + t.title + i}
+                className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
+              >
+                {/* Spine dot */}
+                <span
+                  className={
+                    "absolute left-4 md:left-1/2 top-4 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
+                    dotColor
+                  }
+                />
+                {isProfessional ? (
+                  <>
+                    <div className="pl-12 md:pl-0 md:pr-2">{card}</div>
+                    <div className="hidden md:block" />
+                  </>
+                ) : (
+                  <>
+                    <div className="hidden md:block" />
+                    <div className="pl-12 md:pl-2">{card}</div>
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </div>
 
