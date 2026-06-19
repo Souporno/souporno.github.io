@@ -459,6 +459,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "academic",
     sortKey: "2016-09",
+    endKey: "2020-06",
     period: "2016 – 2020",
     title: "B.Tech — Electronics & Communication Engineering",
     org: "SRM Institute of Science and Technology",
@@ -469,6 +470,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "academic",
     sortKey: "2024-09",
+    endKey: "2026-06",
     period: "Sep 2024 – Jun 2026",
     title: "Master of Science in Information Management (GPA: 4.0)",
     org: "University of Washington iSchool",
@@ -480,6 +482,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2021-01",
+    endKey: "2022-10",
     period: "Jan 2021 – Oct 2022",
     title: "Systems Engineer — Full-Stack Development",
     org: "Infosys Limited | Client: Apple",
@@ -490,6 +493,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2022-11",
+    endKey: "2023-10",
     period: "Nov 2022 – Oct 2023",
     title: "Senior Systems Engineer — Site Reliability & Product Development",
     org: "Infosys Limited | Client: Apple",
@@ -500,6 +504,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2023-11",
+    endKey: "2024-07",
     period: "Nov 2023 – Jul 2024",
     title: "Associate Consultant — Product & Data Strategy",
     org: "Infosys Limited | Client: Arizona Public Services",
@@ -510,6 +515,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2025-07",
+    endKey: "2026-03",
     period: "Jul 2025 – Mar 2026",
     title: "Graduate Student Program Coordinator",
     org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
@@ -520,6 +526,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2025-09",
+    endKey: "2026-06",
     period: "Sep 2025 – Present",
     title: "Graduate Researcher — People Analytics Lab",
     org: "University of Washington",
@@ -530,6 +537,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2026-01",
+    endKey: "2026-03",
     period: "Jan 2026 – Mar 2026",
     title: "Graduate Teaching Assistant (Reader/Grader)",
     org: "University of Washington | IMT 550 — Policy and Ethics in Information Management",
@@ -540,6 +548,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "professional",
     sortKey: "2026-01-15",
+    endKey: "2026-06",
     period: "Jan 2026 – Jun 2026",
     title: "Salesforce Capstone — Product Strategy & AI Workflow Design",
     org: "University of Washington | Sponsored by Salesforce Workforce Intelligence Team",
@@ -551,6 +560,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2022-06",
+    endKey: "2022-06",
     period: "2022",
     title: "Infosys Rise Insta Award",
     org: "Infosys Limited",
@@ -561,6 +571,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2025-04",
+    endKey: "2025-04",
     period: "Spring 2025",
     title: "Best of Quarter — Product Strategy and Leadership (IMT 589 B)",
     org: "University of Washington",
@@ -571,6 +582,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2025-11",
+    endKey: "2025-11",
     period: "Fall 2025",
     title: "2nd Place — IMT 598 Startup Pitch Competition",
     org: "University of Washington",
@@ -581,6 +593,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2025-12",
+    endKey: "2025-12",
     period: "Winter 2025",
     title: "3rd Place — Deloitte iEngage People Analytics Case Competition",
     org: "Deloitte × University of Washington",
@@ -591,6 +604,7 @@ const timeline: TimelineEntry[] = [
   {
     kind: "achievement",
     sortKey: "2026-02",
+    endKey: "2026-02",
     period: "Winter 2026",
     title: "Top 17 Teams — UW Science and Technology Showcase",
     org: "University of Washington",
