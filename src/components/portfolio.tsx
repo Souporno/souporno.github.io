@@ -325,6 +325,39 @@ const projects: Project[] = [
       "MoSCoW Prioritization · ICE Scoring · NPV/ROI Analysis · OKR Design · Competitive Analysis · Financial Modeling · Value Proposition Canvas",
     team: "Ali Lo, Ishika Johari, Raghav Swaminathan, Sanyam Mehta, Soham Desai, Souporno Ghosh",
   },
+  {
+    id: "elderease",
+    number: "07",
+    title: "ElderEase — On-Demand Non-Medical Senior Care Platform",
+    tagline: "A single platform for everyday non-medical senior care.",
+    tags: ["Product Strategy", "Market Sizing", "Entrepreneurship"],
+    categories: ["Product Strategy"],
+    status: "IMT 598 · Entrepreneurship, UW",
+    featured: true,
+    badge: "Top 17 Teams — UW Science & Technology Showcase 2026",
+    summary:
+      "A single, on-demand platform for everyday non-medical senior care — built from a classroom idea into a top-17 pitch at UW's Science and Technology Showcase.",
+    sections: [
+      {
+        heading: "The Problem",
+        body: "The U.S. non-medical home care market is projected to reach $273.6B by 2029. 77% of seniors want to age in place — yet families are left juggling fragmented services with little visibility or trust in who is actually providing care.",
+      },
+      {
+        heading: "What We Built",
+        body: "ElderEase: a single, on-demand platform for everyday non-medical support, designed for both seniors and the families coordinating their care. The platform connects families to vetted caregivers for daily living support, companionship, errands, and household help — removing the fragmentation and trust gap in today's home care market.",
+      },
+      {
+        heading: "My Approach",
+        body: "Over several weeks, our team went deep into:\n• Customer personas and real-world use cases for both seniors and adult-children decision-makers\n• Unit economics and pricing — a $35/hour service model\n• Market sizing — a Total Addressable Market (TAM) of approximately $191B, with a clear path to serviceable markets\n• Competitive differentiation in a space that already has strong incumbent players",
+      },
+      {
+        heading: "Outcome",
+        body: "What started as a class project in Dr. Mike Teodorescu's Entrepreneurship course (IMT 598) — where our team placed 2nd in the startup pitch competition — became something bigger. We refined the idea and were selected as one of the top 17 teams to pitch ElderEase at the University of Washington's 2026 Science and Technology Showcase, the 20th annual event co-hosted by the Science & Engineering Business Association (SEBA) and the Foster School's Buerk Center for Entrepreneurship.\n\nPitching in front of experienced judges pushed us beyond \"good idea\" into clear thinking, structured storytelling, and defensible logic — and changed how I think about building: not just what sounds good, but what actually works in the real world.",
+      },
+    ],
+    tools: "Market Sizing · Unit Economics · Customer Personas · Pitch Development",
+    team: "Souporno Ghosh, Ananya Sharma, Mathew Jerry Meleth, Shanivi Kaul",
+  },
 ];
 
 const skills = [
