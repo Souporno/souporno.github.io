@@ -1155,75 +1155,136 @@ function PathTab() {
 function TimelineCard({
   entry,
   align,
+  achievements,
 }: {
   entry: TimelineEntry;
   align?: "left" | "right";
+  achievements?: TimelineEntry[];
 }) {
   const isProfessional = entry.kind === "professional";
   const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
   const hoverBorder = isProfessional
     ? "hover:border-primary/40"
     : "hover:border-[#3B6E91]/40";
+  const barColor = isProfessional ? "bg-primary" : "bg-[#3B6E91]";
+  // Mini-bar scale: Jan 2016 (left) → Dec 2026 (right) = 132 months.
+  const RANGE_START = 2016 * 12; // Jan 2016
+  const RANGE_TOTAL = 11 * 12; // 132 months through end of 2026
+  const toM = (key: string) => {
+    const [y, m] = key.split("-");
+    return parseInt(y, 10) * 12 + (parseInt(m, 10) - 1);
+  };
+  const startM = toM(entry.sortKey);
+  const endM = toM(entry.endKey);
+  const leftPct = Math.max(0, ((startM - RANGE_START) / RANGE_TOTAL) * 100);
+  const widthPct = Math.max(
+    1.5,
+    ((Math.max(endM, startM + 1) - startM) / RANGE_TOTAL) * 100,
+  );
   return (
     <div
       className={
-        "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
-        hoverBorder +
-        (align === "right" ? " text-left md:text-right" : "")
+        "relative rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
+        hoverBorder
       }
     >
+      {achievements && achievements.length > 0 && (
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 max-w-[55%] z-10">
+          {achievements.map((a, i) => (
+            <Tooltip key={i}>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1 rounded-full border border-[#D4A017]/60 bg-[#FBF3D9] text-[#7a5a0a] px-2 py-0.5 shadow-sm hover:bg-[#F5E7B4] transition-colors"
+                >
+                  <Star className="h-3 w-3 text-[#D4A017] fill-[#D4A017] shrink-0" />
+                  <span className="text-[10px] font-semibold leading-none truncate max-w-[180px]">
+                    {a.title}
+                  </span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-left">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+                  {a.period}
+                </p>
+                <p className="text-xs font-semibold mb-1">{a.title}</p>
+                <p className="text-[11px] text-foreground/85 leading-snug">{a.notes}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+      )}
       <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
         {entry.period}
       </p>
-      <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
+      <h3 className="font-serif text-base md:text-lg font-medium leading-snug pr-2">
         {entry.title}
       </h3>
       <p className={"text-xs mt-1 font-medium " + accent}>{entry.org}</p>
       {entry.location && (
-        <p
-          className={
-            "text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5 " +
-            (align === "right" ? "md:flex-row-reverse" : "")
-          }
-        >
+        <p className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
           <MapPin className="h-3 w-3" /> {entry.location}
         </p>
       )}
       <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{entry.notes}</p>
+
+      {/* Mini timeline bar: 2016 → 2026 */}
+      {entry.kind !== "achievement" && (
+        <div className="mt-4 pt-3 border-t border-border/60">
+          <div className="relative h-1.5 w-full rounded-full bg-muted/60 overflow-hidden">
+            <div
+              className={"absolute top-0 h-full rounded-full " + barColor}
+              style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
+            />
+          </div>
+          <div className="mt-1 flex justify-between text-[9px] font-mono uppercase tracking-widest text-muted-foreground/70">
+            <span>2016</span>
+            <span>2026</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function PathTabInner() {
-  // Convert "YYYY-MM" (or "YYYY-MM-DD") to absolute month index for layout math.
-  const toMonths = (key: string) => {
-    const [y, m] = key.split("-");
-    return parseInt(y, 10) * 12 + (parseInt(m, 10) - 1);
-  };
-  const allMonths = timeline.flatMap((t) => [toMonths(t.sortKey), toMonths(t.endKey)]);
-  const minM = Math.min(...allMonths); // earliest (bottom)
-  const maxM = Math.max(...allMonths); // latest (top)
-  const totalMonths = maxM - minM;
-  const PX_PER_MONTH = 14;
-  const PAD = 24;
-  const trackHeight = totalMonths * PX_PER_MONTH + PAD * 2;
-  // Reversed view: present at top → offsetFromTop(monthIdx) = (maxM - monthIdx) * PX
-  const topFor = (monthIdx: number) => PAD + (maxM - monthIdx) * PX_PER_MONTH;
+  const byDateDesc = (a: TimelineEntry, b: TimelineEntry) =>
+    b.sortKey.localeCompare(a.sortKey);
 
-  // Sort entries newest-first for mobile/list rendering.
-  const sortedDesc = [...timeline].sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+  const professional = timeline
+    .filter((t) => t.kind === "professional")
+    .sort(byDateDesc);
+  const academic = timeline.filter((t) => t.kind === "academic").sort(byDateDesc);
+  const achievements = timeline.filter((t) => t.kind === "achievement");
 
-  const lanes = {
-    professional: timeline.filter((t) => t.kind === "professional"),
-    academic: timeline.filter((t) => t.kind === "academic"),
-    achievements: timeline.filter((t) => t.kind === "achievement"),
-  };
-
-  // Year gridlines
-  const minYear = Math.floor(minM / 12);
-  const maxYear = Math.floor(maxM / 12);
-  const years: number[] = [];
-  for (let y = maxYear; y >= minYear; y--) years.push(y);
+  // Map each achievement → substring of the title of the card it attaches to.
+  const attachMap: { match: (t: string) => boolean; targetIncludes: string }[] = [
+    {
+      match: (t) => t.includes("Infosys Rise Insta"),
+      targetIncludes: "Senior Systems Engineer",
+    },
+    {
+      match: (t) => t.includes("Best of Quarter"),
+      targetIncludes: "Master of Science in Information Management",
+    },
+    {
+      match: (t) => t.includes("2nd Place"),
+      targetIncludes: "Master of Science in Information Management",
+    },
+    {
+      match: (t) => t.includes("3rd Place"),
+      targetIncludes: "Graduate Researcher",
+    },
+    {
+      match: (t) => t.includes("Top 17 Teams"),
+      targetIncludes: "Master of Science in Information Management",
+    },
+  ];
+  const achievementsFor = (entry: TimelineEntry) =>
+    achievements.filter((a) => {
+      const rule = attachMap.find((r) => r.match(a.title));
+      return rule ? entry.title.includes(rule.targetIncludes) : false;
+    });
 
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
@@ -1234,9 +1295,9 @@ function PathTabInner() {
         From India to the United States — a path through engineering, data, and people.
       </p>
       <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
-        A dual-track view of two parallel lives — work on the left, school on the right.
-        Vertical position and bar length are proportional to actual time, so overlapping
-        roles line up visually. Newest at the top.
+        Two parallel lives — work on the left, school on the right. Each card includes a
+        mini timeline (2016 → 2026) so you can see at a glance which roles overlapped.
+        Newest at the top.
       </p>
 
       {/* Legend */}
@@ -1255,136 +1316,33 @@ function PathTabInner() {
         </div>
       </div>
 
-      {/* MOBILE: simple stacked list (newest first) */}
-      <ol className="md:hidden mt-10 space-y-6 relative">
-        <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
-        {sortedDesc.map((t, i) => (
-          <li key={t.period + t.title + i} className="relative pl-12">
-            <span
-              className={
-                "absolute left-4 top-3 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
-                (t.kind === "professional"
-                  ? "bg-primary"
-                  : t.kind === "academic"
-                  ? "bg-[#3B6E91]"
-                  : "bg-[#D4A017]")
-              }
-            />
-            <TimelineCard entry={t} />
-          </li>
-        ))}
-      </ol>
-
-      {/* DESKTOP: Gantt-proportional dual-track timeline */}
+      {/* Two simple stacked columns (newest first), each in normal flow */}
       <TooltipProvider delayDuration={150}>
-        <div
-          className="hidden md:block mt-12 relative"
-          style={{ height: trackHeight }}
-        >
-          {/* Central spine */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
-
-          {/* Year gridlines + labels */}
-          {years.map((y) => {
-            const top = topFor(y * 12);
-            return (
-              <div key={y} className="absolute left-0 right-0" style={{ top }}>
-                <div className="absolute left-0 right-0 h-px bg-border/40" />
-                <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/70">
-                  {y}
-                </span>
-              </div>
-            );
-          })}
-
-          {/* Professional lane (left) */}
-          {lanes.professional.map((t, i) => {
-            const startM = toMonths(t.sortKey);
-            const endM = toMonths(t.endKey);
-            const barTop = topFor(endM);
-            const barHeight = Math.max(8, (endM - startM) * PX_PER_MONTH);
-            return (
-              <div key={"p" + i}>
-                {/* Duration bar on spine side */}
-                <div
-                  className="absolute rounded-full bg-primary/70"
-                  style={{
-                    top: barTop,
-                    height: barHeight,
-                    width: 4,
-                    left: "calc(50% - 8px)",
-                  }}
-                />
-                {/* Card aligned to bar top */}
-                <div
-                  className="absolute pr-8"
-                  style={{ top: barTop, left: 0, width: "calc(50% - 14px)" }}
-                >
-                  <TimelineCard entry={t} align="right" />
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Academic lane (right) */}
-          {lanes.academic.map((t, i) => {
-            const startM = toMonths(t.sortKey);
-            const endM = toMonths(t.endKey);
-            const barTop = topFor(endM);
-            const barHeight = Math.max(8, (endM - startM) * PX_PER_MONTH);
-            return (
-              <div key={"a" + i}>
-                <div
-                  className="absolute rounded-full bg-[#3B6E91]/70"
-                  style={{
-                    top: barTop,
-                    height: barHeight,
-                    width: 4,
-                    left: "calc(50% + 4px)",
-                  }}
-                />
-                <div
-                  className="absolute pl-8"
-                  style={{ top: barTop, right: 0, width: "calc(50% - 14px)" }}
-                >
-                  <TimelineCard entry={t} align="left" />
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Achievement markers on spine — compact pills with tooltip */}
-          {lanes.achievements.map((t, i) => {
-            const top = topFor(toMonths(t.sortKey));
-            return (
-              <div
-                key={"ach" + i}
-                className="absolute left-1/2 -translate-x-1/2 z-10"
-                style={{ top: top - 14 }}
-              >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[#D4A017]/60 bg-[#FBF3D9] text-[#7a5a0a] px-2.5 py-1 shadow-sm hover:bg-[#F5E7B4] transition-colors max-w-[280px]"
-                    >
-                      <Star className="h-3 w-3 text-[#D4A017] fill-[#D4A017] shrink-0" />
-                      <span className="text-[11px] font-semibold leading-none truncate">
-                        {t.title}
-                      </span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-xs text-left">
-                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-                      {t.period}
-                    </p>
-                    <p className="text-xs font-semibold mb-1">{t.title}</p>
-                    <p className="text-[11px] text-foreground/85 leading-snug">{t.notes}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            );
-          })}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+              Professional Experience
+            </h3>
+            {professional.map((t, i) => (
+              <TimelineCard
+                key={"p" + i}
+                entry={t}
+                achievements={achievementsFor(t)}
+              />
+            ))}
+          </div>
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#3B6E91]">
+              Academic
+            </h3>
+            {academic.map((t, i) => (
+              <TimelineCard
+                key={"a" + i}
+                entry={t}
+                achievements={achievementsFor(t)}
+              />
+            ))}
+          </div>
         </div>
       </TooltipProvider>
 
