@@ -1149,7 +1149,6 @@ function WorkTab() {
 }
 
 function PathTab() {
-  // (helpers below; component body uses TimelineCard defined after this function)
   // Convert "YYYY-MM" (or "YYYY-MM-DD") to absolute month index for layout math.
   const toMonths = (key: string) => {
     const [y, m] = key.split("-");
