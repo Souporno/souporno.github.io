@@ -872,9 +872,9 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
         Turning workforce data into decisions that matter.
       </p>
       <p className="mt-6 max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed">
-        MSIM candidate at the University of Washington · Open to full-time opportunities in
+        MSIM graduate of the University of Washington · Open to full-time opportunities in
         People Analytics, Data &amp; Business Analytics, and Product / Program Management ·
-        Graduating June 2026.
+        Graduated June 2026.
       </p>
       <div className="mt-8 flex flex-wrap gap-2.5">
         {[
@@ -953,7 +953,7 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
                       <MapPin className="h-3.5 w-3.5" /> Seattle, WA
                     </li>
                     <li>MSIM @ UW iSchool</li>
-                    <li>Graduating June 2026</li>
+                    <li>Graduated June 2026</li>
                   </ul>
                 </div>
               </div>
