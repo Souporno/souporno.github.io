@@ -942,7 +942,6 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function HomeTab({ go }: { go: (t: TabKey) => void }) {
-  const [expanded, setExpanded] = useState(false);
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-24 pb-16 md:pb-20 animate-fade-in">
       <p className="text-sm font-mono uppercase tracking-widest text-primary mb-6">
@@ -992,66 +991,115 @@ function HomeTab({ go }: { go: (t: TabKey) => void }) {
         </Button>
       </div>
 
-      <section className="mt-20 md:mt-24 grid grid-cols-12 gap-8 border-t border-border pt-16">
-        <div className="col-span-12 md:col-span-3">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-primary">About</h2>
+      <AboutSection />
+    </div>
+  );
+}
+
+function AboutSection() {
+  const [photo, setPhoto, clearPhoto] = useProjectImage("home-portrait");
+  const photoRef = useRef<HTMLInputElement>(null);
+  return (
+    <section className="mt-20 md:mt-24 grid grid-cols-12 gap-8 md:gap-12 border-t border-border pt-16">
+      <div className="col-span-12 md:col-span-4">
+        <div className="md:sticky md:top-24">
+          <button
+            type="button"
+            onClick={() => photoRef.current?.click()}
+            className="group relative block w-full aspect-[4/5] rounded-2xl overflow-hidden border-2 border-primary/40 bg-secondary/50 shadow-lg shadow-primary/5 hover:border-primary/70 hover:shadow-primary/10 transition-all"
+            aria-label={photo ? "Replace portrait photo" : "Upload portrait photo"}
+          >
+            {photo ? (
+              <img
+                src={photo}
+                alt="Souporno Ghosh"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/70 bg-muted/40">
+                <ImagePlus className="h-10 w-10 mb-2" />
+                <span className="text-xs uppercase tracking-widest">Click to upload photo</span>
+              </div>
+            )}
+            {photo && (
+              <span className="absolute inset-0 flex items-center justify-center bg-foreground/0 group-hover:bg-foreground/30 transition-colors opacity-0 group-hover:opacity-100">
+                <span className="inline-flex items-center gap-2 text-sm font-medium bg-background/90 text-foreground px-3 py-1.5 rounded-full">
+                  <ImagePlus className="h-4 w-4" /> Replace photo
+                </span>
+              </span>
+            )}
+          </button>
+          {photo && (
+            <button
+              type="button"
+              onClick={clearPhoto}
+              className="mt-2 text-xs text-muted-foreground hover:text-destructive"
+            >
+              Remove photo
+            </button>
+          )}
+          <input
+            ref={photoRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) setPhoto(f);
+              e.target.value = "";
+            }}
+          />
         </div>
-        <div className="col-span-12 md:col-span-9 space-y-5 text-lg leading-relaxed text-foreground/85">
+      </div>
+      <div className="col-span-12 md:col-span-8">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">
+          About
+        </h2>
+        <div className="space-y-5 text-lg leading-relaxed text-foreground/85">
           <p>
             My work sits at the intersection of <em>people, data, and strategy</em>. I'm drawn to
             problems where understanding human behavior and organizational dynamics can be
             unlocked through rigorous analysis.
           </p>
-          {expanded ? (
-            <>
-              <p>
-                I come from a background that blends technical depth (Python, SQL, Tableau,
-                synthetic data generation) with product and strategic thinking (OKRs, roadmapping,
-                MoSCoW/ICE prioritization). I'm equally comfortable writing a data pipeline and
-                presenting a business case to executives.
+          <p>
+            I come from a background that blends technical depth (Python, SQL, Tableau,
+            synthetic data generation) with product and strategic thinking (OKRs, roadmapping,
+            MoSCoW/ICE prioritization). I'm equally comfortable writing a data pipeline and
+            presenting a business case to executives.
+          </p>
+          <p>
+            When I'm not building dashboards or wrangling datasets, I'm thinking about the
+            future of work — and how organizations can take better care of the people inside
+            them.
+          </p>
+          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                Looking for
               </p>
-              <p>
-                When I'm not building dashboards or wrangling datasets, I'm thinking about the
-                future of work — and how organizations can take better care of the people inside
-                them.
+              <ul className="space-y-1 text-foreground/80">
+                <li>People / Workforce Analytics</li>
+                <li>Data &amp; Business Analytics</li>
+                <li>Operations Analytics</li>
+                <li>Product / Program Management</li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                Currently
               </p>
-              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Looking for
-                  </p>
-                  <ul className="space-y-1 text-foreground/80">
-                    <li>People / Workforce Analytics</li>
-                    <li>Data &amp; Business Analytics</li>
-                    <li>Operations Analytics</li>
-                    <li>Product / Program Management</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-                    Currently
-                  </p>
-                  <ul className="space-y-1 text-foreground/80">
-                    <li className="inline-flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5" /> Seattle, WA
-                    </li>
-                    <li>MSIM @ UW iSchool</li>
-                    <li>Graduated June 2026</li>
-                  </ul>
-                </div>
-              </div>
-            </>
-          ) : null}
-          <button
-            onClick={() => setExpanded((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-          >
-            {expanded ? "Show less" : "Read more"}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+              <ul className="space-y-1 text-foreground/80">
+                <li className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" /> Seattle, WA
+                </li>
+                <li>MSIM @ UW iSchool</li>
+                <li>Graduated June 2026</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 
