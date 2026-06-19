@@ -1149,18 +1149,48 @@ function WorkTab() {
 }
 
 function PathTab() {
-  const sorted = [...timeline].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+  // Convert "YYYY-MM" (or "YYYY-MM-DD") to absolute month index for layout math.
+  const toMonths = (key: string) => {
+    const [y, m] = key.split("-");
+    return parseInt(y, 10) * 12 + (parseInt(m, 10) - 1);
+  };
+  const allMonths = timeline.flatMap((t) => [toMonths(t.sortKey), toMonths(t.endKey)]);
+  const minM = Math.min(...allMonths); // earliest (bottom)
+  const maxM = Math.max(...allMonths); // latest (top)
+  const totalMonths = maxM - minM;
+  const PX_PER_MONTH = 14;
+  const PAD = 24;
+  const trackHeight = totalMonths * PX_PER_MONTH + PAD * 2;
+  // Reversed view: present at top → offsetFromTop(monthIdx) = (maxM - monthIdx) * PX
+  const topFor = (monthIdx: number) => PAD + (maxM - monthIdx) * PX_PER_MONTH;
+
+  // Sort entries newest-first for mobile/list rendering.
+  const sortedDesc = [...timeline].sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+
+  const lanes = {
+    professional: timeline.filter((t) => t.kind === "professional"),
+    academic: timeline.filter((t) => t.kind === "academic"),
+    achievements: timeline.filter((t) => t.kind === "achievement"),
+  };
+
+  // Year gridlines
+  const minYear = Math.floor(minM / 12);
+  const maxYear = Math.floor(maxM / 12);
+  const years: number[] = [];
+  for (let y = maxYear; y >= minYear; y--) years.push(y);
+
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
         My Journey
       </h2>
       <p className="font-serif text-3xl md:text-4xl font-medium tracking-tight">
-        From Chennai to Seattle — a path through engineering, data, and people.
+        From India to the United States — a path through engineering, data, and people.
       </p>
       <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
-        A dual-track view of two parallel lives — work on the left, school on the right —
-        with achievements marked on the spine where they belong in time.
+        A dual-track view of two parallel lives — work on the left, school on the right.
+        Vertical position and bar length are proportional to actual time, so overlapping
+        roles line up visually. Newest at the top.
       </p>
 
       {/* Legend */}
@@ -1179,109 +1209,138 @@ function PathTab() {
         </div>
       </div>
 
-      {/* Dual-track timeline */}
-      <div className="mt-12 relative">
-        {/* Central spine */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-1/2" />
-        <ol className="space-y-8">
-          {sorted.map((t, i) => {
-            if (t.kind === "achievement") {
-              const side = t.connectsTo ?? "none";
-              return (
-                <li
-                  key={t.period + t.title + i}
-                  className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
-                >
-                  {/* Connector line on desktop */}
-                  {side !== "none" && (
-                    <span
-                      className={
-                        "hidden md:block absolute top-1/2 h-px bg-[#D4A017]/60 " +
-                        (side === "left"
-                          ? "right-1/2 mr-3 w-10"
-                          : "left-1/2 ml-3 w-10")
-                      }
-                    />
-                  )}
-                  {/* Centered achievement pill */}
-                  <div className="md:col-span-2 flex md:justify-center pl-12 md:pl-0">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#D4A017]/50 bg-[#D4A017]/10 text-[#7a5a0a] px-3.5 py-1.5 shadow-sm relative md:z-10">
-                      <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017] shrink-0" />
-                      <div className="text-left">
-                        <p className="text-[10px] font-mono uppercase tracking-widest text-[#7a5a0a]/80">
-                          {t.period}
-                        </p>
-                        <p className="text-xs font-semibold leading-tight">{t.title}</p>
-                        <p className="text-[11px] text-foreground/70 leading-snug mt-0.5 max-w-md">
-                          {t.notes}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Spine dot */}
-                  <span className="absolute left-4 md:left-1/2 top-3 md:top-1/2 h-2.5 w-2.5 rounded-full bg-[#D4A017] ring-4 ring-background -translate-x-1/2 md:-translate-y-1/2" />
-                </li>
-              );
-            }
+      {/* MOBILE: simple stacked list (newest first) */}
+      <ol className="md:hidden mt-10 space-y-6 relative">
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
+        {sortedDesc.map((t, i) => (
+          <li key={t.period + t.title + i} className="relative pl-12">
+            <span
+              className={
+                "absolute left-4 top-3 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
+                (t.kind === "professional"
+                  ? "bg-primary"
+                  : t.kind === "academic"
+                  ? "bg-[#3B6E91]"
+                  : "bg-[#D4A017]")
+              }
+            />
+            <TimelineCard entry={t} />
+          </li>
+        ))}
+      </ol>
 
-            const isProfessional = t.kind === "professional";
-            const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
-            const dotColor = isProfessional ? "bg-primary" : "bg-[#3B6E91]";
-            const hoverBorder = isProfessional
-              ? "hover:border-primary/40"
-              : "hover:border-[#3B6E91]/40";
+      {/* DESKTOP: Gantt-proportional dual-track timeline */}
+      <TooltipProvider delayDuration={150}>
+        <div
+          className="hidden md:block mt-12 relative"
+          style={{ height: trackHeight }}
+        >
+          {/* Central spine */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
 
-            const card = (
-              <div
-                className={
-                  "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
-                  hoverBorder
-                }
-              >
-                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-                  {t.period}
-                </p>
-                <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
-                  {t.title}
-                </h3>
-                <p className={"text-xs mt-1 font-medium " + accent}>{t.org}</p>
-                {t.location && (
-                  <p className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
-                    <MapPin className="h-3 w-3" /> {t.location}
-                  </p>
-                )}
-                <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{t.notes}</p>
+          {/* Year gridlines + labels */}
+          {years.map((y) => {
+            const top = topFor(y * 12);
+            return (
+              <div key={y} className="absolute left-0 right-0" style={{ top }}>
+                <div className="absolute left-0 right-0 h-px bg-border/40" />
+                <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/70">
+                  {y}
+                </span>
               </div>
             );
+          })}
 
+          {/* Professional lane (left) */}
+          {lanes.professional.map((t, i) => {
+            const startM = toMonths(t.sortKey);
+            const endM = toMonths(t.endKey);
+            const barTop = topFor(endM);
+            const barHeight = Math.max(8, (endM - startM) * PX_PER_MONTH);
             return (
-              <li
-                key={t.period + t.title + i}
-                className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
-              >
-                {/* Spine dot */}
-                <span
-                  className={
-                    "absolute left-4 md:left-1/2 top-4 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
-                    dotColor
-                  }
+              <div key={"p" + i}>
+                {/* Duration bar on spine side */}
+                <div
+                  className="absolute rounded-full bg-primary/70"
+                  style={{
+                    top: barTop,
+                    height: barHeight,
+                    width: 4,
+                    left: "calc(50% - 8px)",
+                  }}
                 />
-                {isProfessional ? (
-                  <>
-                    <div className="pl-12 md:pl-0 md:pr-2">{card}</div>
-                    <div className="hidden md:block" />
-                  </>
-                ) : (
-                  <>
-                    <div className="hidden md:block" />
-                    <div className="pl-12 md:pl-2">{card}</div>
-                  </>
-                )}
-              </li>
+                {/* Card aligned to bar top */}
+                <div
+                  className="absolute pr-8"
+                  style={{ top: barTop, left: 0, width: "calc(50% - 14px)" }}
+                >
+                  <TimelineCard entry={t} align="right" />
+                </div>
+              </div>
             );
           })}
-        </ol>
-      </div>
+
+          {/* Academic lane (right) */}
+          {lanes.academic.map((t, i) => {
+            const startM = toMonths(t.sortKey);
+            const endM = toMonths(t.endKey);
+            const barTop = topFor(endM);
+            const barHeight = Math.max(8, (endM - startM) * PX_PER_MONTH);
+            return (
+              <div key={"a" + i}>
+                <div
+                  className="absolute rounded-full bg-[#3B6E91]/70"
+                  style={{
+                    top: barTop,
+                    height: barHeight,
+                    width: 4,
+                    left: "calc(50% + 4px)",
+                  }}
+                />
+                <div
+                  className="absolute pl-8"
+                  style={{ top: barTop, right: 0, width: "calc(50% - 14px)" }}
+                >
+                  <TimelineCard entry={t} align="left" />
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Achievement markers on spine — compact pills with tooltip */}
+          {lanes.achievements.map((t, i) => {
+            const top = topFor(toMonths(t.sortKey));
+            return (
+              <div
+                key={"ach" + i}
+                className="absolute left-1/2 -translate-x-1/2 z-10"
+                style={{ top: top - 14 }}
+              >
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#D4A017]/60 bg-[#FBF3D9] text-[#7a5a0a] px-2.5 py-1 shadow-sm hover:bg-[#F5E7B4] transition-colors max-w-[280px]"
+                    >
+                      <Star className="h-3 w-3 text-[#D4A017] fill-[#D4A017] shrink-0" />
+                      <span className="text-[11px] font-semibold leading-none truncate">
+                        {t.title}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs text-left">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+                      {t.period}
+                    </p>
+                    <p className="text-xs font-semibold mb-1">{t.title}</p>
+                    <p className="text-[11px] text-foreground/85 leading-snug">{t.notes}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            );
+          })}
+        </div>
+      </TooltipProvider>
 
       <section className="mt-20 border-t border-border pt-16">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
