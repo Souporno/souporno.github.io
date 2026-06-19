@@ -432,8 +432,25 @@ const categories: ("All" | Category)[] = [
   "Data Engineering",
 ];
 
-const timeline = [
+type TimelineKind = "professional" | "academic" | "achievement";
+type TimelineEntry = {
+  kind: TimelineKind;
+  // sortKey: approximate start date (YYYY-MM) used to order entries vertically.
+  sortKey: string;
+  period: string;
+  title: string;
+  org: string;
+  location?: string;
+  notes: string;
+  // For achievements: which side the marker connects to.
+  connectsTo?: "left" | "right" | "none";
+};
+
+const timeline: TimelineEntry[] = [
+  // Academic
   {
+    kind: "academic",
+    sortKey: "2016-09",
     period: "2016 – 2020",
     title: "B.Tech — Electronics & Communication Engineering",
     org: "SRM Institute of Science and Technology",
@@ -442,6 +459,19 @@ const timeline = [
       "Built a foundation in engineering systems, electronics, and computational thinking. Graduated June 2020 with GPA 3.2.",
   },
   {
+    kind: "academic",
+    sortKey: "2024-09",
+    period: "Sep 2024 – Jun 2026",
+    title: "Master of Science in Information Management (GPA: 4.0)",
+    org: "University of Washington iSchool",
+    location: "Seattle, WA",
+    notes:
+      "Specializations in Program/Product Management Consulting and Data Science. Coursework spanning People Analytics, Data Warehousing, Product Strategy, Data Visualization, and UX Research. Graduated June 2026.",
+  },
+  // Professional
+  {
+    kind: "professional",
+    sortKey: "2021-01",
     period: "Jan 2021 – Oct 2022",
     title: "Systems Engineer — Full-Stack Development",
     org: "Infosys Limited | Client: Apple",
@@ -450,14 +480,8 @@ const timeline = [
       "Built analytics-enabled admin tools in Java and SQL used across 500+ Apple Retail locations globally. Developed REST APIs and Grafana dashboards to improve data flow and system visibility.",
   },
   {
-    period: "2022",
-    title: "Infosys Rise Insta Award",
-    org: "Infosys Limited",
-    location: "Bangalore, India",
-    notes:
-      "Recognized with three consecutive quarterly Rise Insta Awards for outstanding performance and impact.",
-  },
-  {
+    kind: "professional",
+    sortKey: "2022-11",
     period: "Nov 2022 – Oct 2023",
     title: "Senior Systems Engineer — Site Reliability & Product Development",
     org: "Infosys Limited | Client: Apple",
@@ -466,6 +490,8 @@ const timeline = [
       "Led analytics for Apple's Concierge App — owned KPI dashboards in Splunk, built Python/Go data pipelines, improved failure detection speed by 85%. Supported Apple's first retail store launch in India.",
   },
   {
+    kind: "professional",
+    sortKey: "2023-11",
     period: "Nov 2023 – Jul 2024",
     title: "Associate Consultant — Product & Data Strategy",
     org: "Infosys Limited | Client: Arizona Public Services",
@@ -474,60 +500,95 @@ const timeline = [
       "Analyzed multi-system billing and customer datasets in Oracle SQL, improving data accuracy by 35%. Delivered decision-ready analytics for Finance, Operations, and Engineering stakeholders.",
   },
   {
-    period: "Sep 2024 – Jun 2026",
-    title: "M.S. in Information Management (GPA: 4.0)",
-    org: "University of Washington iSchool",
+    kind: "professional",
+    sortKey: "2025-07",
+    period: "Jul 2025 – Mar 2026",
+    title: "Graduate Student Program Coordinator",
+    org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
     location: "Seattle, WA",
     notes:
-      "Specializations in Program/Product Management Consulting and Data Science. Coursework spanning People Analytics, Data Warehousing, Product Strategy, Data Visualization, and UX Research.",
+      "Designed and coordinated programs connecting 15,000+ international and domestic students with institutional resources, leadership development, and cross-cultural engagement. Led the International Welcome Program, Fall Welcome Mixer, DOL ID visits, wellness sessions, and an Employment-Based Visa info session. Improved program engagement by 35% through user research and feedback loops.",
   },
   {
-    period: "Jan 2025 – Present",
+    kind: "professional",
+    sortKey: "2025-09",
+    period: "Sep 2025 – Present",
+    title: "Graduate Researcher — People Analytics Lab",
+    org: "University of Washington",
+    location: "Seattle, WA",
+    notes:
+      "Integrated HRIS, engagement, and performance datasets to build longitudinal workforce cohorts (1,600+ employees). Developed a Performance Archetypes Framework using Python classification and synthetic data generation for workforce segmentation. Supported by a People Analytics Research stipend from the iSchool Workforce Systems Innovation Term Fund (Winter–Spring 2026), conducting applied research under Dr. Heather Whiteman.",
+  },
+  {
+    kind: "professional",
+    sortKey: "2026-01",
+    period: "Jan 2026 – Mar 2026",
+    title: "Graduate Teaching Assistant (Reader/Grader)",
+    org: "University of Washington | IMT 550 — Policy and Ethics in Information Management",
+    location: "Seattle, WA",
+    notes:
+      "Prepared course materials, evaluated assignments and exams, and maintained grading records for Professor Jim Loter's course. Supported ethical reasoning and critical reflection in student writing on information policy and ethics.",
+  },
+  {
+    kind: "professional",
+    sortKey: "2026-01-15",
+    period: "Jan 2026 – Jun 2026",
     title: "Salesforce Capstone — Product Strategy & AI Workflow Design",
     org: "University of Washington | Sponsored by Salesforce Workforce Intelligence Team",
     location: "Seattle, WA",
     notes:
       "Led redesign of Salesforce's manager nudging system for people analytics. Designed event-based AI workflow architecture, Slack-based delivery concepts, and a measurement framework tracking engagement and downstream impact.",
   },
+  // Achievements
   {
-    period: "Jul 2025 – Present",
-    title: "Graduate Student Program Coordinator",
-    org: "CIRCLE — Center for International Relations & Cultural Leadership Exchange, UW Student Life",
-    location: "Seattle, WA",
+    kind: "achievement",
+    sortKey: "2022-06",
+    period: "2022",
+    title: "Infosys Rise Insta Award",
+    org: "Infosys Limited",
     notes:
-      "Designed and coordinated programs connecting 15,000+ international and domestic students with institutional resources. Improved program engagement by 35% through user research and feedback loops.",
+      "Recognized with three consecutive quarterly Rise Insta Awards for outstanding performance and impact.",
+    connectsTo: "left",
   },
   {
-    period: "Sep 2025 – Present",
-    title: "Graduate Researcher — People Analytics Lab",
+    kind: "achievement",
+    sortKey: "2025-04",
+    period: "Spring 2025",
+    title: "Best of Quarter — Product Strategy and Leadership (IMT 589 B)",
     org: "University of Washington",
-    location: "Seattle, WA",
     notes:
-      "Integrated HRIS, engagement, and performance datasets to build longitudinal workforce cohorts (1,600+ employees). Developed a Performance Archetypes Framework using Python classification and synthetic data generation for workforce segmentation.",
+      "Led strategic analysis for Workday's global growth strategy. Named best project of the quarter by Prof. Nitin T Bhat.",
+    connectsTo: "right",
   },
   {
+    kind: "achievement",
+    sortKey: "2025-11",
+    period: "Fall 2025",
+    title: "2nd Place — IMT 598 Startup Pitch Competition",
+    org: "University of Washington",
+    notes:
+      "Placed 2nd in the startup pitch competition in Dr. Mike Teodorescu's Entrepreneurship course with teammates Ananya Sharma, Mathew Jerry Meleth, and Shanivi Kaul — the seed of what became ElderEase.",
+    connectsTo: "none",
+  },
+  {
+    kind: "achievement",
+    sortKey: "2025-12",
     period: "Winter 2025",
     title: "3rd Place — Deloitte iEngage People Analytics Case Competition",
     org: "Deloitte × University of Washington",
-    location: "Seattle, WA",
     notes:
-      "Designed OkiDoki — an AI-powered burnout detection platform for healthcare workers. SMART KPI framework (6 well-being dimensions) recognized and photographed by Deloitte judges.",
+      "Designed OkiDoki, an AI-powered burnout detection platform for healthcare workers. SMART KPI framework recognized by Deloitte judges.",
+    connectsTo: "left",
   },
   {
-    period: "Spring 2025",
-    title: "Best of Quarter — Product Strategy and Leadership",
-    org: "University of Washington (IMT 589 B)",
-    location: "Seattle, WA",
+    kind: "achievement",
+    sortKey: "2026-02",
+    period: "Winter 2026",
+    title: "Top 17 Teams — UW Science and Technology Showcase",
+    org: "University of Washington",
     notes:
-      "Led strategic analysis for Workday's path from $8.45B to $13.22B — APAC expansion, UX overhaul, and outcome-based AI pricing. Named best project of the quarter by Prof. Nitin T Bhat.",
-  },
-  {
-    period: "Jan 2026 – Present",
-    title: "Graduate Teaching Assistant",
-    org: "University of Washington | IMT 550 – Policy and Ethics in Information Management",
-    location: "Seattle, WA",
-    notes:
-      "Evaluated analytical and written coursework and supported ethical reasoning in data-driven decision making for graduate students.",
+      "Selected as one of the top 17 teams to pitch ElderEase at the University of Washington's 2026 Science and Technology Showcase, the 20th annual event co-hosted by SEBA and the Foster School's Buerk Center for Entrepreneurship.",
+    connectsTo: "none",
   },
 ];
 
