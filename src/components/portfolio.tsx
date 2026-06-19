@@ -1079,6 +1079,7 @@ function WorkTab() {
 }
 
 function PathTab() {
+  const sorted = [...timeline].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
@@ -1087,31 +1088,128 @@ function PathTab() {
       <p className="font-serif text-3xl md:text-4xl font-medium tracking-tight">
         From Chennai to Seattle — a path through engineering, data, and people.
       </p>
+      <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
+        A dual-track view of two parallel lives — work on the left, school on the right —
+        with achievements marked on the spine where they belong in time.
+      </p>
 
+      {/* Legend */}
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs">
+        <div className="inline-flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+          <span className="text-foreground/80 font-medium">Professional Experience</span>
+        </div>
+        <div className="inline-flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3B6E91]" />
+          <span className="text-foreground/80 font-medium">Academic</span>
+        </div>
+        <div className="inline-flex items-center gap-2">
+          <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017]" />
+          <span className="text-foreground/80 font-medium">Achievement / Recognition</span>
+        </div>
+      </div>
+
+      {/* Dual-track timeline */}
       <div className="mt-12 relative">
-        <div className="absolute left-3 md:left-[140px] top-2 bottom-2 w-px bg-border" />
-        <ol className="space-y-10">
-          {timeline.map((t) => (
-            <li key={t.period + t.title} className="relative grid grid-cols-[1fr] md:grid-cols-[140px_1fr] gap-4 md:gap-10">
-              <div className="hidden md:block text-sm font-mono uppercase tracking-widest text-muted-foreground pt-1">
-                {t.period}
-              </div>
-              <div className="relative pl-10 md:pl-8">
-                <span className="absolute left-1.5 md:-left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-background" />
-                <p className="md:hidden text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
+        {/* Central spine */}
+        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-1/2" />
+        <ol className="space-y-8">
+          {sorted.map((t, i) => {
+            if (t.kind === "achievement") {
+              const side = t.connectsTo ?? "none";
+              return (
+                <li
+                  key={t.period + t.title + i}
+                  className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
+                >
+                  {/* Connector line on desktop */}
+                  {side !== "none" && (
+                    <span
+                      className={
+                        "hidden md:block absolute top-1/2 h-px bg-[#D4A017]/60 " +
+                        (side === "left"
+                          ? "right-1/2 mr-3 w-10"
+                          : "left-1/2 ml-3 w-10")
+                      }
+                    />
+                  )}
+                  {/* Centered achievement pill */}
+                  <div className="md:col-span-2 flex md:justify-center pl-12 md:pl-0">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[#D4A017]/50 bg-[#D4A017]/10 text-[#7a5a0a] px-3.5 py-1.5 shadow-sm relative md:z-10">
+                      <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017] shrink-0" />
+                      <div className="text-left">
+                        <p className="text-[10px] font-mono uppercase tracking-widest text-[#7a5a0a]/80">
+                          {t.period}
+                        </p>
+                        <p className="text-xs font-semibold leading-tight">{t.title}</p>
+                        <p className="text-[11px] text-foreground/70 leading-snug mt-0.5 max-w-md">
+                          {t.notes}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Spine dot */}
+                  <span className="absolute left-4 md:left-1/2 top-3 md:top-1/2 h-2.5 w-2.5 rounded-full bg-[#D4A017] ring-4 ring-background -translate-x-1/2 md:-translate-y-1/2" />
+                </li>
+              );
+            }
+
+            const isProfessional = t.kind === "professional";
+            const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
+            const dotColor = isProfessional ? "bg-primary" : "bg-[#3B6E91]";
+            const hoverBorder = isProfessional
+              ? "hover:border-primary/40"
+              : "hover:border-[#3B6E91]/40";
+
+            const card = (
+              <div
+                className={
+                  "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
+                  hoverBorder
+                }
+              >
+                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
                   {t.period}
                 </p>
-                <div className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40">
-                  <h3 className="font-serif text-lg md:text-xl font-medium">{t.title}</h3>
-                  <p className="text-sm text-primary mt-1">{t.org}</p>
-                  <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-0.5">
+                <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
+                  {t.title}
+                </h3>
+                <p className={"text-xs mt-1 font-medium " + accent}>{t.org}</p>
+                {t.location && (
+                  <p className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
                     <MapPin className="h-3 w-3" /> {t.location}
                   </p>
-                  <p className="mt-3 text-sm text-foreground/85 leading-relaxed">{t.notes}</p>
-                </div>
+                )}
+                <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{t.notes}</p>
               </div>
-            </li>
-          ))}
+            );
+
+            return (
+              <li
+                key={t.period + t.title + i}
+                className="relative grid grid-cols-1 md:grid-cols-2 md:gap-12"
+              >
+                {/* Spine dot */}
+                <span
+                  className={
+                    "absolute left-4 md:left-1/2 top-4 h-2.5 w-2.5 rounded-full ring-4 ring-background -translate-x-1/2 " +
+                    dotColor
+                  }
+                />
+                {isProfessional ? (
+                  <>
+                    <div className="pl-12 md:pl-0 md:pr-2">{card}</div>
+                    <div className="hidden md:block" />
+                  </>
+                ) : (
+                  <>
+                    <div className="hidden md:block" />
+                    <div className="pl-12 md:pl-2">{card}</div>
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </div>
 
