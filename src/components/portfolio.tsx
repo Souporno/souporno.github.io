@@ -11,6 +11,7 @@ import {
   X,
   ImagePlus,
   FileText,
+  Star,
 } from "lucide-react";
 import { Paperclip, Download, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
