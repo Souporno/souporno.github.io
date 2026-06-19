@@ -1149,6 +1149,52 @@ function WorkTab() {
 }
 
 function PathTab() {
+  return <PathTabInner />;
+}
+
+function TimelineCard({
+  entry,
+  align,
+}: {
+  entry: TimelineEntry;
+  align?: "left" | "right";
+}) {
+  const isProfessional = entry.kind === "professional";
+  const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
+  const hoverBorder = isProfessional
+    ? "hover:border-primary/40"
+    : "hover:border-[#3B6E91]/40";
+  return (
+    <div
+      className={
+        "rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
+        hoverBorder +
+        (align === "right" ? " text-left md:text-right" : "")
+      }
+    >
+      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+        {entry.period}
+      </p>
+      <h3 className="font-serif text-base md:text-lg font-medium leading-snug">
+        {entry.title}
+      </h3>
+      <p className={"text-xs mt-1 font-medium " + accent}>{entry.org}</p>
+      {entry.location && (
+        <p
+          className={
+            "text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5 " +
+            (align === "right" ? "md:flex-row-reverse" : "")
+          }
+        >
+          <MapPin className="h-3 w-3" /> {entry.location}
+        </p>
+      )}
+      <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{entry.notes}</p>
+    </div>
+  );
+}
+
+function PathTabInner() {
   // Convert "YYYY-MM" (or "YYYY-MM-DD") to absolute month index for layout math.
   const toMonths = (key: string) => {
     const [y, m] = key.split("-");
