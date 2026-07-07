@@ -1210,142 +1210,358 @@ function PathTab() {
   return <PathTabInner />;
 }
 
-function TimelineCard({
-  entry,
-  align,
-  achievements,
-}: {
-  entry: TimelineEntry;
-  align?: "left" | "right";
-  achievements?: TimelineEntry[];
-}) {
-  const isProfessional = entry.kind === "professional";
-  const accent = isProfessional ? "text-primary" : "text-[#3B6E91]";
-  const hoverBorder = isProfessional
-    ? "hover:border-primary/40"
-    : "hover:border-[#3B6E91]/40";
-  const barColor = isProfessional ? "bg-primary" : "bg-[#3B6E91]";
-  // Mini-bar scale: Jan 2016 (left) → Dec 2026 (right) = 132 months.
-  const RANGE_START = 2016 * 12; // Jan 2016
-  const RANGE_TOTAL = 11 * 12; // 132 months through end of 2026
-  const toM = (key: string) => {
-    const [y, m] = key.split("-");
-    return parseInt(y, 10) * 12 + (parseInt(m, 10) - 1);
-  };
-  const startM = toM(entry.sortKey);
-  const endM = toM(entry.endKey);
-  const leftPct = Math.max(0, ((startM - RANGE_START) / RANGE_TOTAL) * 100);
-  const widthPct = Math.max(
-    1.5,
-    ((Math.max(endM, startM + 1) - startM) / RANGE_TOTAL) * 100,
-  );
+// ---------- Nested-container Path timeline ----------
+
+type PathChild = {
+  title: string;
+  org?: string;
+  startDec: number;
+  endDec: number;
+  period: string;
+  notes: string;
+};
+
+type PathAchievement = {
+  title: string;
+  period: string;
+  dateDec: number;
+  notes: string;
+};
+
+type PathParent = {
+  kind: "academic" | "professional";
+  label: string;
+  subLabel: string;
+  location: string;
+  startDec: number;
+  endDec: number;
+  children: PathChild[];
+  achievements: PathAchievement[];
+};
+
+const decOf = (y: number, m: number) => y + (m - 1) / 12;
+
+const pathParents: PathParent[] = [
+  {
+    kind: "academic",
+    label: "University of Washington iSchool",
+    subLabel:
+      "MS Information Management · GPA 4.0 · Graduated June 2026",
+    location: "Seattle, WA",
+    startDec: decOf(2024, 9),
+    endDec: decOf(2026, 6),
+    children: [
+      {
+        title: "Graduate Student Program Coordinator",
+        org: "CIRCLE, UW Student Life",
+        startDec: decOf(2025, 7),
+        endDec: decOf(2026, 3),
+        period: "Jul 2025 – Mar 2026",
+        notes:
+          "Designed and coordinated programs connecting 15,000+ international and domestic students. Led Welcome Program, DOL ID visits, wellness sessions, and visa info sessions.",
+      },
+      {
+        title: "Graduate Researcher — People Analytics Lab",
+        org: "University of Washington",
+        startDec: decOf(2025, 9),
+        endDec: decOf(2026, 6),
+        period: "Sep 2025 – Present",
+        notes:
+          "Integrated HRIS, engagement, and performance datasets (1,600+ employees). Built a Performance Archetypes Framework in Python. Funded by the iSchool Workforce Systems Innovation Term Fund under Dr. Heather Whiteman.",
+      },
+      {
+        title: "Graduate Teaching Assistant (Reader/Grader)",
+        org: "UW — IMT 550, Prof. Jim Loter",
+        startDec: decOf(2026, 1),
+        endDec: decOf(2026, 3),
+        period: "Jan 2026 – Mar 2026",
+        notes:
+          "Prepared course materials, evaluated assignments and exams, and maintained grading records for Policy and Ethics in Information Management.",
+      },
+      {
+        title: "Salesforce Capstone — Talent Nudging System",
+        org: "UW × Salesforce Workforce Intelligence",
+        startDec: decOf(2026, 1),
+        endDec: decOf(2026, 6),
+        period: "Jan 2026 – Jun 2026",
+        notes:
+          "Redesigned Salesforce's manager nudging system using a cluster-based governance framework. Recognized with the Visionary Lens Award at the iSchool Capstone Showcase.",
+      },
+    ],
+    achievements: [
+      {
+        title: "3rd Place — Deloitte iEngage",
+        period: "Winter 2025",
+        dateDec: decOf(2025, 2),
+        notes:
+          "Designed OkiDoki, an AI-powered burnout detection platform for healthcare workers. SMART KPI framework recognized by Deloitte judges.",
+      },
+      {
+        title: "Best of Quarter — Workday",
+        period: "Spring 2025",
+        dateDec: decOf(2025, 5),
+        notes:
+          "Led strategic analysis for Workday's global growth strategy in IMT 589 B. Named best project of the quarter by Prof. Nitin T Bhat.",
+      },
+      {
+        title: "2nd Place — IMT 598 Startup Pitch",
+        period: "Fall 2025",
+        dateDec: decOf(2025, 11),
+        notes:
+          "Placed 2nd in Dr. Mike Teodorescu's Entrepreneurship pitch competition — the seed of what became ElderEase.",
+      },
+      {
+        title: "Top 17 Teams — UW STS Showcase",
+        period: "Winter 2026",
+        dateDec: decOf(2026, 2),
+        notes:
+          "Selected as one of the top 17 teams to pitch ElderEase at the 2026 UW Science and Technology Showcase.",
+      },
+      {
+        title: "Visionary Lens Award — Capstone Showcase",
+        period: "Jun 2026",
+        dateDec: decOf(2026, 6),
+        notes:
+          "Recognized at the UW iSchool Capstone Showcase for the Salesforce Talent Nudging System.",
+      },
+    ],
+  },
+  {
+    kind: "professional",
+    label: "Infosys Limited",
+    subLabel:
+      "Client: Apple (2021–2023) · Client: Arizona Public Services (2023–2024)",
+    location: "Bangalore, India",
+    startDec: decOf(2021, 1),
+    endDec: decOf(2024, 7),
+    children: [
+      {
+        title: "Systems Engineer — Full-Stack Development",
+        startDec: decOf(2021, 1),
+        endDec: decOf(2022, 10),
+        period: "Jan 2021 – Oct 2022",
+        notes:
+          "Built analytics-enabled admin tools in Java and SQL across 500+ Apple Retail locations globally. Developed REST APIs and Grafana dashboards.",
+      },
+      {
+        title: "Senior Systems Engineer — Site Reliability & Product Development",
+        startDec: decOf(2022, 11),
+        endDec: decOf(2023, 10),
+        period: "Nov 2022 – Oct 2023",
+        notes:
+          "Led analytics for Apple's Concierge App — Splunk dashboards, Python/Go pipelines, 85% faster failure detection. Supported Apple India's first retail launch.",
+      },
+      {
+        title: "Associate Consultant — Product & Data Strategy",
+        startDec: decOf(2023, 11),
+        endDec: decOf(2024, 7),
+        period: "Nov 2023 – Jul 2024",
+        notes:
+          "Analyzed billing and customer datasets in Oracle SQL, improving data accuracy by 35%. Delivered decision-ready analytics for Finance, Operations, and Engineering.",
+      },
+    ],
+    achievements: [
+      {
+        title: "Infosys Rise Insta Award",
+        period: "2022",
+        dateDec: decOf(2022, 6),
+        notes:
+          "Recognized with three consecutive quarterly Rise Insta Awards for outstanding performance and impact.",
+      },
+    ],
+  },
+  {
+    kind: "academic",
+    label: "SRM Institute of Science and Technology",
+    subLabel:
+      "B.Tech — Electronics & Communication Engineering · GPA 3.2 · Graduated June 2020",
+    location: "Chennai, India",
+    startDec: decOf(2016, 6),
+    endDec: decOf(2020, 6),
+    children: [],
+    achievements: [],
+  },
+];
+
+// Vertical scale for the year spine.
+const PATH_PX_PER_YEAR = 110;
+const PATH_TOP_PAD = 40;
+const PATH_TOP_YEAR = 2026;
+const PATH_BOTTOM_YEAR = 2016;
+// Anchor so Jan 2026 tick sits half-a-year below the top pad (leaves room for
+// dates in the first half of 2026 like Jun 2026 to appear above the tick).
+const PATH_YEARS = Array.from(
+  { length: PATH_TOP_YEAR - PATH_BOTTOM_YEAR + 1 },
+  (_, i) => PATH_TOP_YEAR - i,
+);
+const yFromDec = (d: number) =>
+  PATH_TOP_PAD + (PATH_TOP_YEAR + 0.5 - d) * PATH_PX_PER_YEAR;
+const PATH_TOTAL_HEIGHT =
+  PATH_TOP_PAD * 2 + (PATH_TOP_YEAR - PATH_BOTTOM_YEAR + 1) * PATH_PX_PER_YEAR;
+
+// Greedy lane assignment for overlapping children — earlier starts pick the
+// leftmost free lane; lane count is the max concurrency.
+function assignLanes(children: PathChild[]) {
+  const sorted = children
+    .map((c, i) => ({ c, i }))
+    .sort((a, b) => a.c.startDec - b.c.startDec);
+  const laneEnd: number[] = [];
+  const placement = new Map<number, number>(); // original index -> lane
+  for (const { c, i } of sorted) {
+    let lane = -1;
+    for (let l = 0; l < laneEnd.length; l++) {
+      if (laneEnd[l] <= c.startDec) {
+        lane = l;
+        break;
+      }
+    }
+    if (lane === -1) {
+      lane = laneEnd.length;
+      laneEnd.push(0);
+    }
+    laneEnd[lane] = c.endDec;
+    placement.set(i, lane);
+  }
+  return { placement, laneCount: Math.max(1, laneEnd.length) };
+}
+
+function ParentBox({ p }: { p: PathParent }) {
+  const top = yFromDec(p.endDec);
+  const bottom = yFromDec(p.startDec);
+  const height = bottom - top;
+  const isAcademic = p.kind === "academic";
+  const bg = isAcademic ? "bg-[#EBE4F5]" : "bg-[#F5EAE7]";
+  const labelColor = isAcademic ? "text-[#5B3A8A]" : "text-[#8A4A3A]";
+  const childBorder = isAcademic ? "border-l-[#7B5AB3]" : "border-l-[#B26A55]";
+  const connectorColor = isAcademic ? "bg-[#7B5AB3]" : "bg-[#B26A55]";
+
+  const { placement, laneCount } = assignLanes(p.children);
+  // Reserve a small right strip inside the parent for achievement badges.
+  const ACHIEVEMENT_STRIP = p.achievements.length > 0 ? 38 : 0;
+
   return (
     <div
-      className={
-        "relative rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md " +
-        hoverBorder
-      }
+      className="absolute left-0"
+      style={{ top, height, right: 120 }}
     >
-      {achievements && achievements.length > 0 && (
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 max-w-[55%] z-10">
-          {achievements.map((a, i) => (
+      {/* Connector lines from parent's right edge to the spine */}
+      <div
+        className={`absolute h-px ${connectorColor} opacity-70`}
+        style={{ top: 0, right: -30, width: 30 }}
+      />
+      <div
+        className={`absolute h-px ${connectorColor} opacity-70`}
+        style={{ bottom: 0, right: -30, width: 30 }}
+      />
+
+      <div
+        className={`relative w-full h-full rounded-2xl ${bg} shadow-sm overflow-hidden`}
+      >
+        {/* Institution label — top-left chip inside the box */}
+        <div className="absolute top-2 left-3 right-3 z-20 pointer-events-none">
+          <h4
+            className={`font-serif text-sm md:text-base font-semibold leading-tight ${labelColor}`}
+          >
+            {p.label}
+          </h4>
+          <p className="text-[10.5px] text-foreground/70 leading-snug mt-0.5">
+            {p.subLabel}
+          </p>
+          <p className="text-[10px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
+            <MapPin className="h-2.5 w-2.5" /> {p.location}
+          </p>
+        </div>
+
+        {/* Children lanes */}
+        <div
+          className="absolute inset-0"
+          style={{ right: ACHIEVEMENT_STRIP }}
+        >
+          {p.children.map((c, i) => {
+            const lane = placement.get(i) ?? 0;
+            const cTop = yFromDec(c.endDec) - top;
+            const cBottom = yFromDec(c.startDec) - top;
+            const cHeight = Math.max(28, cBottom - cTop);
+            const laneWidthPct = 100 / laneCount;
+            const leftPct = lane * laneWidthPct;
+            return (
+              <Tooltip key={i}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className={`absolute rounded-md bg-white/95 border-l-[3px] ${childBorder} border border-black/5 shadow-sm p-1.5 text-left overflow-hidden hover:shadow-md transition-shadow`}
+                    style={{
+                      top: cTop,
+                      height: cHeight,
+                      left: `calc(${leftPct}% + 4px)`,
+                      width: `calc(${laneWidthPct}% - 8px)`,
+                    }}
+                  >
+                    <p className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground leading-tight">
+                      {c.period}
+                    </p>
+                    <p className="text-[10.5px] font-semibold leading-tight mt-0.5 line-clamp-3 text-foreground">
+                      {c.title}
+                    </p>
+                    {c.org && (
+                      <p className="text-[9.5px] text-foreground/60 leading-tight mt-0.5 line-clamp-2">
+                        {c.org}
+                      </p>
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-xs text-left">
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+                    {c.period}
+                  </p>
+                  <p className="text-xs font-semibold mb-1">{c.title}</p>
+                  {c.org && (
+                    <p className="text-[10.5px] text-foreground/70 mb-1">{c.org}</p>
+                  )}
+                  <p className="text-[11px] text-foreground/85 leading-snug">
+                    {c.notes}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+
+        {/* Achievement badges — right strip */}
+        {p.achievements.map((a, i) => {
+          const aTop = Math.max(4, Math.min(height - 20, yFromDec(a.dateDec) - top - 8));
+          return (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1 rounded-full border border-[#D4A017]/60 bg-[#FBF3D9] text-[#7a5a0a] px-2 py-0.5 shadow-sm hover:bg-[#F5E7B4] transition-colors"
+                  className="absolute z-10 inline-flex items-center justify-center rounded-full border border-[#D4A017]/70 bg-[#FBF3D9] hover:bg-[#F5E7B4] shadow-sm h-6 w-6"
+                  style={{ top: aTop, right: 6 }}
+                  aria-label={a.title}
                 >
-                  <Star className="h-3 w-3 text-[#D4A017] fill-[#D4A017] shrink-0" />
-                  <span className="text-[10px] font-semibold leading-none truncate max-w-[180px]">
-                    {a.title}
-                  </span>
+                  <Star className="h-3 w-3 text-[#B8860B] fill-[#D4A017]" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs text-left">
+              <TooltipContent side="left" className="max-w-xs text-left">
                 <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
                   {a.period}
                 </p>
                 <p className="text-xs font-semibold mb-1">{a.title}</p>
-                <p className="text-[11px] text-foreground/85 leading-snug">{a.notes}</p>
+                <p className="text-[11px] text-foreground/85 leading-snug">
+                  {a.notes}
+                </p>
               </TooltipContent>
             </Tooltip>
-          ))}
-        </div>
-      )}
-      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-        {entry.period}
-      </p>
-      <h3 className="font-serif text-base md:text-lg font-medium leading-snug pr-2">
-        {entry.title}
-      </h3>
-      <p className={"text-xs mt-1 font-medium " + accent}>{entry.org}</p>
-      {entry.location && (
-        <p className="text-[11px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
-          <MapPin className="h-3 w-3" /> {entry.location}
-        </p>
-      )}
-      <p className="mt-2.5 text-xs text-foreground/85 leading-relaxed">{entry.notes}</p>
-
-      {/* Mini timeline bar: 2016 → 2026 */}
-      {entry.kind !== "achievement" && (
-        <div className="mt-4 pt-3 border-t border-border/60">
-          <div className="relative h-1.5 w-full rounded-full bg-muted/60 overflow-hidden">
-            <div
-              className={"absolute top-0 h-full rounded-full " + barColor}
-              style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
-            />
-          </div>
-          <div className="mt-1 flex justify-between text-[9px] font-mono uppercase tracking-widest text-muted-foreground/70">
-            <span>2016</span>
-            <span>2026</span>
-          </div>
-        </div>
-      )}
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 function PathTabInner() {
-  const byDateDesc = (a: TimelineEntry, b: TimelineEntry) =>
-    b.sortKey.localeCompare(a.sortKey);
-
-  const professional = timeline
-    .filter((t) => t.kind === "professional")
-    .sort(byDateDesc);
-  const academic = timeline.filter((t) => t.kind === "academic").sort(byDateDesc);
-  const achievements = timeline.filter((t) => t.kind === "achievement");
-
-  // Map each achievement → substring of the title of the card it attaches to.
-  const attachMap: { match: (t: string) => boolean; targetIncludes: string }[] = [
-    {
-      match: (t) => t.includes("Infosys Rise Insta"),
-      targetIncludes: "Senior Systems Engineer",
-    },
-    {
-      match: (t) => t.includes("Best of Quarter"),
-      targetIncludes: "Master of Science in Information Management",
-    },
-    {
-      match: (t) => t.includes("2nd Place"),
-      targetIncludes: "Master of Science in Information Management",
-    },
-    {
-      match: (t) => t.includes("3rd Place"),
-      targetIncludes: "Graduate Researcher",
-    },
-    {
-      match: (t) => t.includes("Top 17 Teams"),
-      targetIncludes: "Master of Science in Information Management",
-    },
-  ];
-  const achievementsFor = (entry: TimelineEntry) =>
-    achievements.filter((a) => {
-      const rule = attachMap.find((r) => r.match(a.title));
-      return rule ? entry.title.includes(rule.targetIncludes) : false;
-    });
-
   return (
-    <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-5xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
         My Journey
       </h2>
@@ -1353,54 +1569,58 @@ function PathTabInner() {
         From India to the United States — a path through engineering, data, and people.
       </p>
       <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
-        Two parallel lives — work on the left, school on the right. Each card includes a
-        mini timeline (2016 → 2026) so you can see at a glance which roles overlapped.
-        Newest at the top.
+        Each institution is a container on the timeline; the roles and projects inside it
+        are sized and stacked to show when they actually happened — and when they overlapped.
+        Hover any card or star for detail.
       </p>
 
       {/* Legend */}
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs">
         <div className="inline-flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-          <span className="text-foreground/80 font-medium">Professional Experience</span>
-        </div>
-        <div className="inline-flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#3B6E91]" />
+          <span className="h-3 w-6 rounded bg-[#EBE4F5] border border-[#7B5AB3]/40" />
           <span className="text-foreground/80 font-medium">Academic</span>
         </div>
         <div className="inline-flex items-center gap-2">
-          <Star className="h-3.5 w-3.5 text-[#D4A017] fill-[#D4A017]" />
+          <span className="h-3 w-6 rounded bg-[#F5EAE7] border border-[#B26A55]/40" />
+          <span className="text-foreground/80 font-medium">Professional</span>
+        </div>
+        <div className="inline-flex items-center gap-2">
+          <Star className="h-3.5 w-3.5 text-[#B8860B] fill-[#D4A017]" />
           <span className="text-foreground/80 font-medium">Achievement / Recognition</span>
         </div>
       </div>
 
-      {/* Two simple stacked columns (newest first), each in normal flow */}
-      <TooltipProvider delayDuration={150}>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div className="flex flex-col gap-6">
-            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary">
-              Professional Experience
-            </h3>
-            {professional.map((t, i) => (
-              <TimelineCard
-                key={"p" + i}
-                entry={t}
-                achievements={achievementsFor(t)}
-              />
-            ))}
-          </div>
-          <div className="flex flex-col gap-6">
-            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#3B6E91]">
-              Academic
-            </h3>
-            {academic.map((t, i) => (
-              <TimelineCard
-                key={"a" + i}
-                entry={t}
-                achievements={achievementsFor(t)}
-              />
-            ))}
-          </div>
+      {/* Nested-container timeline */}
+      <TooltipProvider delayDuration={120}>
+        <div
+          className="relative mt-10 w-full"
+          style={{ height: PATH_TOTAL_HEIGHT }}
+        >
+          {/* Year spine */}
+          <div
+            className="absolute top-0 bottom-0 w-px bg-foreground/40"
+            style={{ right: 82 }}
+          />
+          {PATH_YEARS.map((y) => {
+            const yTop = yFromDec(y);
+            return (
+              <div
+                key={y}
+                className="absolute flex items-center gap-2"
+                style={{ top: yTop - 7, right: 0, width: 90 }}
+              >
+                <span className="h-px w-3 bg-foreground/70" />
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {y}
+                </span>
+              </div>
+            );
+          })}
+
+          {/* Parent containers */}
+          {pathParents.map((p) => (
+            <ParentBox key={p.label} p={p} />
+          ))}
         </div>
       </TooltipProvider>
 
