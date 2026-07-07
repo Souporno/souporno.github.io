@@ -364,6 +364,64 @@ const projects: Project[] = [
     tools: "Market Sizing · Unit Economics · Customer Personas · Pitch Development",
     team: "Souporno Ghosh, Ananya Sharma, Mathew Jerry Meleth, Shanivi Kaul",
   },
+  {
+    id: "salesforce-capstone",
+    number: "08",
+    title: "From Metric Dumps to Manager Action: Talent Nudging System",
+    tagline: "A governance framework for Salesforce workforce nudges.",
+    tags: ["People Analytics", "Product Strategy", "Behavioral Science"],
+    categories: ["People Analytics", "Product Strategy"],
+    status: "MSIM Capstone · Jan–Jun 2026 · Partner: Salesforce Workforce Intelligence",
+    featured: true,
+    badge: "🏆 Visionary Lens Award — UW iSchool Capstone Showcase",
+    summary:
+      "A cluster-based governance layer that turns disconnected Salesforce workforce metrics into bundled, prioritized Slack nudges — grounded in COM-B and EAST behavioral frameworks.",
+    sections: [
+      {
+        heading: "Overview",
+        body: "This MSIM capstone project was built in partnership with Salesforce's Workforce Intelligence team. Over a full semester, our team of four tackled a challenge that sits at the intersection of behavioral science, product design, and People Analytics: How can workforce insights be delivered to managers at the right time, with the right context, and with clear actions that drive meaningful outcomes?\n\nThe project was recognized with the Visionary Lens Award for Insightfulness at the UW iSchool Capstone Showcase 2026.",
+      },
+      {
+        heading: "The Problem",
+        body: "Managers at Salesforce receive people analytics as disconnected metric updates — creating noise, alert fatigue, and unclear next steps. Important signals get missed while managers spend more time reporting than leading.\n\n\"We need a system that delivers the right signal, at the right time, with the right action pathway.\"\n\nKey design questions we investigated:\n• How should related people metrics be grouped so signals reinforce each other rather than compete?\n• How should nudges be prioritized when multiple signals fire simultaneously?\n• How can the system reduce fatigue while still escalating serious risks?\n• How can Salesforce measure whether nudges actually lead to action and improvement?",
+      },
+      {
+        heading: "Our Solution",
+        body: "A cluster-based governance layer that groups related workforce metrics into manager decision moments, and delivers bundled nudges ordered by urgency (Red → Amber → Green) — replacing disconnected metric dumps with meaningful, actionable signals.",
+      },
+      {
+        heading: "The Five Governance Clusters",
+        body: "We organized Salesforce's full suite of workforce metrics into five clusters, each mapped to a distinct manager decision moment:\n1. Alignment & Coaching (Check-ins, OKRs) → Planning & alignment\n2. Team Health & Retention (Engagement Survey, Voluntary Attrition, Burnout) → People risk & retention\n3. Talent Development & Performance (Development Programs, Performance Evals) → Capability & eval quality\n4. AI Adoption & Productivity (AI Usage, AI Time Gained) → Adaptability & productivity\n5. Team Participation & Coordination (Office Attendance, VTO) → Coordination & planning\n\nClustering works because outcomes like burnout, engagement, and performance are interdependent — seeing them together reveals the system, not just isolated signals.",
+      },
+      {
+        heading: "Behavioral Design Foundation",
+        body: "We grounded the entire system in two frameworks.\n\nCOM-B Framework — ensuring each nudge addresses the three behavioral drivers:\n• Capability: Make the signal easy to understand\n• Opportunity: Deliver inside the manager workflow\n• Motivation: Connect the signal to a timely, trusted action\n\nEAST Framework — making every nudge:\n• Easy: Bundle related signals to reduce cognitive load\n• Attractive: Clear Red-Amber-Green hierarchy and visible progress\n• Social: Benchmarks and norms when helpful\n• Timely: Nudge at the manager decision moment",
+      },
+      {
+        heading: "Governance Rules",
+        body: "Six system-level rules govern how nudges behave across the full manager experience:\n• Bundling Rule: All triggered metrics in the same cluster are sent in one Slack message\n• Priority Rule: When multiple bundles compete, order is Team Health → Alignment → Talent → AI → Participation\n• Mute Rule: A cluster may be muted only when all signals are green; new negative signals automatically lift mute\n• Privacy Rule: Sensitive signals (e.g., Burnout) stay aggregate-only and require a minimum team-size threshold\n• Cooldown Rule: After a manager acts, the same nudge is delayed by a defined cooldown period to prevent fatigue\n• Escalation Rule: Persistent red signals after the action window escalate to HRBP with structured context automatically",
+      },
+      {
+        heading: "Manager Experience in Slack — 4 Scenarios",
+        body: "We designed and prototyped four real delivery scenarios for the Team Health & Retention cluster:\n• Scenario A: All three signals negative → Critical Bundle sent immediately\n• Scenario B: Burnout negative, others stable → Mixed Bundle with targeted action\n• Scenario C: All three signals green → Reinforcement message to sustain strong practices\n• Scenario D: No action logged within seven days → Follow-up message with escalation pathway\n\nEach scenario included mockups of the Slack message UI, action buttons, cooldown logic, and the conditions that trigger each path.",
+      },
+      {
+        heading: "Success Measurement Framework",
+        body: "A five-stage measurement model tracking impact from delivery through sustained behavioral change:\n\nREACH → ACTION → BEHAVIOR → OUTCOME → SUSTAIN\n\n• Reach: Did the nudge reach the right manager?\n• Action: Did the manager take a first action?\n• Behavior: Did manager behavior change?\n• Outcome: Did the related people metric improve?\n• Sustain: Is the system effective and sustainable long-term?\n\nSalesforce's Workforce Intelligence team reviews system performance quarterly and recalibrates thresholds, content, and rules based on this loop.",
+      },
+      {
+        heading: "Future Recommendations",
+        body: "Short Term:\n• Split attrition metrics into voluntary and involuntary categories for clearer workforce interpretation\n• Surface internal mobility rate as a forward-looking retention and growth indicator\n• Add eNPS as a high-level sentiment signal within manager nudges\n\nLong Term:\n• Apply KESI-based Organizational Network Analysis to identify hidden collaboration and support patterns within teams\n• Introduce OKR-style goal attainment metrics to measure progress beyond binary threshold completion",
+      },
+      {
+        heading: "Recognition",
+        body: "The project was presented at the UW iSchool Capstone Showcase 2026 and received the Visionary Lens Award for Insightfulness — recognizing the depth of the governance model, the rigor of the behavioral design approach, and the practical implementability of the system.\n\nA special thank you to Steven Bramwell and Jamie Kroll at Salesforce for their mentorship, practitioner perspective, and willingness to challenge our assumptions — and to Professor Heather Whiteman for her guidance throughout.",
+      },
+    ],
+    tools:
+      "Behavioral Science · COM-B & EAST Frameworks · Governance Design · People Analytics · Decision Support Systems · Slack Integration Design",
+    team: "Ananya Sharma, Kshiti Sinha, Shanivi Kaul, Souporno Ghosh (Team FourSight — MSIM, UW iSchool)",
+  },
 ];
 
 const skills = [
