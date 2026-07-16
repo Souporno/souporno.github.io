@@ -1166,7 +1166,7 @@ function WorkTab() {
   const filtered =
     filter === "All" ? projects : projects.filter((p) => p.categories.includes(filter));
   return (
-    <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-[1400px] px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
         Selected work
       </h2>
