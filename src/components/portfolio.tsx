@@ -1383,22 +1383,6 @@ const pathParents: PathParent[] = [
   },
 ];
 
-// Vertical scale for the year spine.
-const PATH_PX_PER_YEAR = 110;
-const PATH_TOP_PAD = 40;
-const PATH_TOP_YEAR = 2026;
-const PATH_BOTTOM_YEAR = 2016;
-// Anchor so Jan 2026 tick sits half-a-year below the top pad (leaves room for
-// dates in the first half of 2026 like Jun 2026 to appear above the tick).
-const PATH_YEARS = Array.from(
-  { length: PATH_TOP_YEAR - PATH_BOTTOM_YEAR + 1 },
-  (_, i) => PATH_TOP_YEAR - i,
-);
-const yFromDec = (d: number) =>
-  PATH_TOP_PAD + (PATH_TOP_YEAR + 0.5 - d) * PATH_PX_PER_YEAR;
-const PATH_TOTAL_HEIGHT =
-  PATH_TOP_PAD * 2 + (PATH_TOP_YEAR - PATH_BOTTOM_YEAR + 1) * PATH_PX_PER_YEAR;
-
 // Greedy lane assignment for overlapping children — earlier starts pick the
 // leftmost free lane; lane count is the max concurrency.
 function assignLanes(children: PathChild[]) {
@@ -1425,136 +1409,148 @@ function assignLanes(children: PathChild[]) {
   return { placement, laneCount: Math.max(1, laneEnd.length) };
 }
 
-function ParentBox({ p }: { p: PathParent }) {
-  const top = yFromDec(p.endDec);
-  const bottom = yFromDec(p.startDec);
-  const height = bottom - top;
+function ChildCard({
+  c,
+  accentBorder,
+  tipSide,
+}: {
+  c: PathChild;
+  accentBorder: string;
+  tipSide: "left" | "right";
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          className={`w-full text-left rounded-md bg-white/95 border-l-[3px] ${accentBorder} border border-black/5 shadow-sm p-2 hover:shadow-md transition-shadow`}
+        >
+          <p className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground leading-tight">
+            {c.period}
+          </p>
+          <p className="text-[11px] font-semibold leading-tight mt-0.5 text-foreground">
+            {c.title}
+          </p>
+          {c.org && (
+            <p className="text-[10px] text-foreground/60 leading-tight mt-0.5">
+              {c.org}
+            </p>
+          )}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side={tipSide} className="max-w-xs text-left">
+        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+          {c.period}
+        </p>
+        <p className="text-xs font-semibold mb-1">{c.title}</p>
+        {c.org && (
+          <p className="text-[10.5px] text-foreground/70 mb-1">{c.org}</p>
+        )}
+        <p className="text-[11px] text-foreground/85 leading-snug">{c.notes}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+function AchievementBadge({
+  a,
+  tipSide,
+}: {
+  a: PathAchievement;
+  tipSide: "left" | "right";
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#D4A017]/70 bg-[#FBF3D9] hover:bg-[#F5E7B4] shadow-sm px-2 py-0.5"
+          aria-label={a.title}
+        >
+          <Star className="h-3 w-3 text-[#B8860B] fill-[#D4A017]" />
+          <span className="text-[10px] font-medium text-[#7A5A0F] leading-none">
+            {a.title}
+          </span>
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side={tipSide} className="max-w-xs text-left">
+        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+          {a.period}
+        </p>
+        <p className="text-xs font-semibold mb-1">{a.title}</p>
+        <p className="text-[11px] text-foreground/85 leading-snug">{a.notes}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+function ParentBox({
+  p,
+  side,
+}: {
+  p: PathParent;
+  side: "left" | "right";
+}) {
   const isAcademic = p.kind === "academic";
   const bg = isAcademic ? "bg-[#EBE4F5]" : "bg-[#F5EAE7]";
   const labelColor = isAcademic ? "text-[#5B3A8A]" : "text-[#8A4A3A]";
   const childBorder = isAcademic ? "border-l-[#7B5AB3]" : "border-l-[#B26A55]";
-  const connectorColor = isAcademic ? "bg-[#7B5AB3]" : "bg-[#B26A55]";
 
   const { placement, laneCount } = assignLanes(p.children);
-  // Reserve a small right strip inside the parent for achievement badges.
-  const ACHIEVEMENT_STRIP = p.achievements.length > 0 ? 38 : 0;
+  const lanes: PathChild[][] = Array.from({ length: laneCount }, () => []);
+  p.children.forEach((c, i) => {
+    const l = placement.get(i) ?? 0;
+    lanes[l].push(c);
+  });
+  // Within a lane, newest at top.
+  lanes.forEach((lane) => lane.sort((a, b) => b.startDec - a.startDec));
+
+  // Tooltip should open toward the spine (inner side).
+  const tipSide: "left" | "right" = side === "left" ? "right" : "left";
+  // Achievement strip hugs the spine.
+  const achAlign = side === "left" ? "justify-end" : "justify-start";
 
   return (
-    <div
-      className="absolute left-0"
-      style={{ top, height, right: 120 }}
-    >
-      {/* Connector lines from parent's right edge to the spine */}
-      <div
-        className={`absolute h-px ${connectorColor} opacity-70`}
-        style={{ top: 0, right: -30, width: 30 }}
-      />
-      <div
-        className={`absolute h-px ${connectorColor} opacity-70`}
-        style={{ bottom: 0, right: -30, width: 30 }}
-      />
-
-      <div
-        className={`relative w-full h-full rounded-2xl ${bg} shadow-sm overflow-hidden`}
+    <div className={`rounded-2xl ${bg} shadow-sm p-4`}>
+      <h4
+        className={`font-serif text-sm md:text-base font-semibold leading-tight ${labelColor}`}
       >
-        {/* Institution label — top-left chip inside the box */}
-        <div className="absolute top-2 left-3 right-3 z-20 pointer-events-none">
-          <h4
-            className={`font-serif text-sm md:text-base font-semibold leading-tight ${labelColor}`}
-          >
-            {p.label}
-          </h4>
-          <p className="text-[10.5px] text-foreground/70 leading-snug mt-0.5">
-            {p.subLabel}
-          </p>
-          <p className="text-[10px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
-            <MapPin className="h-2.5 w-2.5" /> {p.location}
-          </p>
-        </div>
+        {p.label}
+      </h4>
+      <p className="text-[11px] text-foreground/70 leading-snug mt-0.5">
+        {p.subLabel}
+      </p>
+      <p className="text-[10.5px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
+        <MapPin className="h-2.5 w-2.5" /> {p.location}
+      </p>
 
-        {/* Children lanes */}
+      {p.children.length > 0 && (
         <div
-          className="absolute inset-0"
-          style={{ right: ACHIEVEMENT_STRIP }}
+          className="mt-3 grid gap-2"
+          style={{ gridTemplateColumns: `repeat(${laneCount}, minmax(0, 1fr))` }}
         >
-          {p.children.map((c, i) => {
-            const lane = placement.get(i) ?? 0;
-            const cTop = yFromDec(c.endDec) - top;
-            const cBottom = yFromDec(c.startDec) - top;
-            const cHeight = Math.max(28, cBottom - cTop);
-            const laneWidthPct = 100 / laneCount;
-            const leftPct = lane * laneWidthPct;
-            return (
-              <Tooltip key={i}>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className={`absolute rounded-md bg-white/95 border-l-[3px] ${childBorder} border border-black/5 shadow-sm p-1.5 text-left overflow-hidden hover:shadow-md transition-shadow`}
-                    style={{
-                      top: cTop,
-                      height: cHeight,
-                      left: `calc(${leftPct}% + 4px)`,
-                      width: `calc(${laneWidthPct}% - 8px)`,
-                    }}
-                  >
-                    <p className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground leading-tight">
-                      {c.period}
-                    </p>
-                    <p className="text-[10.5px] font-semibold leading-tight mt-0.5 line-clamp-3 text-foreground">
-                      {c.title}
-                    </p>
-                    {c.org && (
-                      <p className="text-[9.5px] text-foreground/60 leading-tight mt-0.5 line-clamp-2">
-                        {c.org}
-                      </p>
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-xs text-left">
-                  <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-                    {c.period}
-                  </p>
-                  <p className="text-xs font-semibold mb-1">{c.title}</p>
-                  {c.org && (
-                    <p className="text-[10.5px] text-foreground/70 mb-1">{c.org}</p>
-                  )}
-                  <p className="text-[11px] text-foreground/85 leading-snug">
-                    {c.notes}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
+          {lanes.map((laneChildren, li) => (
+            <div key={li} className="flex flex-col gap-2">
+              {laneChildren.map((c, i) => (
+                <ChildCard
+                  key={`${li}-${i}`}
+                  c={c}
+                  accentBorder={childBorder}
+                  tipSide={tipSide}
+                />
+              ))}
+            </div>
+          ))}
         </div>
+      )}
 
-        {/* Achievement badges — right strip */}
-        {p.achievements.map((a, i) => {
-          const aTop = Math.max(4, Math.min(height - 20, yFromDec(a.dateDec) - top - 8));
-          return (
-            <Tooltip key={i}>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  className="absolute z-10 inline-flex items-center justify-center rounded-full border border-[#D4A017]/70 bg-[#FBF3D9] hover:bg-[#F5E7B4] shadow-sm h-6 w-6"
-                  style={{ top: aTop, right: 6 }}
-                  aria-label={a.title}
-                >
-                  <Star className="h-3 w-3 text-[#B8860B] fill-[#D4A017]" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="left" className="max-w-xs text-left">
-                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
-                  {a.period}
-                </p>
-                <p className="text-xs font-semibold mb-1">{a.title}</p>
-                <p className="text-[11px] text-foreground/85 leading-snug">
-                  {a.notes}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
-      </div>
+      {p.achievements.length > 0 && (
+        <div className={`mt-3 flex flex-wrap gap-1.5 ${achAlign}`}>
+          {p.achievements.map((a, i) => (
+            <AchievementBadge key={i} a={a} tipSide={tipSide} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
