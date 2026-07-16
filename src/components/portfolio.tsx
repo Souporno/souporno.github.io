@@ -756,7 +756,7 @@ function ProjectCard({ project }: { project: Project }) {
       <article className="group flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/40">
         <div className="relative aspect-[16/9] bg-secondary/60 overflow-hidden">
           {inProgress && (
-            <span className="absolute top-2 left-2 z-10 inline-flex items-center gap-1 text-[12px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#D4A017]/15 text-[#8a6508] border border-[#D4A017]/40 backdrop-blur-sm">
+            <span className="absolute top-2 left-2 z-10 inline-flex items-center gap-1 text-[15px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#D4A017]/15 text-[#8a6508] border border-[#D4A017]/40 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[#D4A017]" />
               In Progress
             </span>
@@ -806,14 +806,14 @@ function ProjectCard({ project }: { project: Project }) {
             {project.categories.map((c) => (
               <span
                 key={c}
-                className="text-[12px] font-semibold uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 rounded-full"
+                className="text-[15px] font-semibold uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 rounded-full"
               >
                 {c}
               </span>
             ))}
             {project.badge && (
               project.badge !== "In Progress" && (
-                <span className="inline-flex items-center gap-1 text-[12px] font-medium text-foreground/70 bg-secondary px-2 py-1 rounded-full">
+                <span className="inline-flex items-center gap-1 text-[15px] font-medium text-foreground/70 bg-secondary px-2 py-1 rounded-full">
                   {project.badge}
                 </span>
               )
@@ -829,7 +829,7 @@ function ProjectCard({ project }: { project: Project }) {
             {project.tools.split("·").map((t) => (
               <span
                 key={t}
-                className="text-[13px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground border border-border"
+                className="text-[16px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground border border-border"
               >
                 {t.trim()}
               </span>
@@ -974,14 +974,14 @@ function ProjectCard({ project }: { project: Project }) {
                           <a
                             href={a.dataUrl}
                             download={a.name}
-                            className="text-[13px] text-primary hover:underline inline-flex items-center gap-1"
+                            className="text-[16px] text-primary hover:underline inline-flex items-center gap-1"
                           >
                             <Download className="h-3 w-3" /> Download
                           </a>
                           <button
                             type="button"
                             onClick={() => removeAttachment(a.id)}
-                            className="text-[13px] text-muted-foreground hover:text-destructive inline-flex items-center gap-1"
+                            className="text-[16px] text-muted-foreground hover:text-destructive inline-flex items-center gap-1"
                           >
                             <Trash2 className="h-3 w-3" /> Remove
                           </button>
@@ -1425,28 +1425,28 @@ function ChildCard({
           type="button"
           className={`w-full text-left rounded-md bg-white/95 border-l-[3px] ${accentBorder} border border-black/5 shadow-sm p-2 hover:shadow-md transition-shadow`}
         >
-          <p className="text-[13px] font-mono uppercase tracking-wider text-muted-foreground leading-tight">
+          <p className="text-[16px] font-mono uppercase tracking-wider text-muted-foreground leading-tight">
             {c.period}
           </p>
-          <p className="text-[13px] font-semibold leading-tight mt-0.5 text-foreground">
+          <p className="text-[16px] font-semibold leading-tight mt-0.5 text-foreground">
             {c.title}
           </p>
           {c.org && (
-            <p className="text-[12px] text-foreground/60 leading-tight mt-0.5">
+            <p className="text-[15px] text-foreground/60 leading-tight mt-0.5">
               {c.org}
             </p>
           )}
         </button>
       </TooltipTrigger>
       <TooltipContent side={tipSide} className="max-w-xs text-left">
-        <p className="text-[12px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+        <p className="text-[15px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
           {c.period}
         </p>
         <p className="text-xs font-semibold mb-1">{c.title}</p>
         {c.org && (
-          <p className="text-[13px] text-foreground/70 mb-1">{c.org}</p>
+          <p className="text-[16px] text-foreground/70 mb-1">{c.org}</p>
         )}
-        <p className="text-[13px] text-foreground/85 leading-snug">{c.notes}</p>
+        <p className="text-[16px] text-foreground/85 leading-snug">{c.notes}</p>
       </TooltipContent>
     </Tooltip>
   );
@@ -1468,17 +1468,17 @@ function AchievementBadge({
           aria-label={a.title}
         >
           <Star className="h-3 w-3 text-[#B8860B] fill-[#D4A017]" />
-          <span className="text-[12px] font-medium text-[#7A5A0F] leading-none">
+          <span className="text-[15px] font-medium text-[#7A5A0F] leading-none">
             {a.title}
           </span>
         </button>
       </TooltipTrigger>
       <TooltipContent side={tipSide} className="max-w-xs text-left">
-        <p className="text-[12px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
+        <p className="text-[15px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
           {a.period}
         </p>
         <p className="text-xs font-semibold mb-1">{a.title}</p>
-        <p className="text-[13px] text-foreground/85 leading-snug">{a.notes}</p>
+        <p className="text-[16px] text-foreground/85 leading-snug">{a.notes}</p>
       </TooltipContent>
     </Tooltip>
   );
@@ -1517,10 +1517,10 @@ function ParentBox({
       >
         {p.label}
       </h4>
-      <p className="text-[13px] text-foreground/70 leading-snug mt-0.5">
+      <p className="text-[16px] text-foreground/70 leading-snug mt-0.5">
         {p.subLabel}
       </p>
-      <p className="text-[13px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
+      <p className="text-[16px] text-muted-foreground inline-flex items-center gap-1 mt-0.5">
         <MapPin className="h-2.5 w-2.5" /> {p.location}
       </p>
 
@@ -1625,14 +1625,14 @@ function PathTabInner() {
                     <div className="w-px flex-1 bg-foreground/40" />
                     <div className="absolute top-0 -translate-y-1/2 flex items-center gap-1.5">
                       <span className="h-px w-3 bg-foreground/50" />
-                      <span className="font-mono text-[13px] text-muted-foreground bg-background px-1.5 py-0.5 rounded">
+                      <span className="font-mono text-[16px] text-muted-foreground bg-background px-1.5 py-0.5 rounded">
                         {topYear}
                       </span>
                       <span className="h-px w-3 bg-foreground/50" />
                     </div>
                     <div className="absolute bottom-0 translate-y-1/2 flex items-center gap-1.5">
                       <span className="h-px w-3 bg-foreground/50" />
-                      <span className="font-mono text-[13px] text-muted-foreground bg-background px-1.5 py-0.5 rounded">
+                      <span className="font-mono text-[16px] text-muted-foreground bg-background px-1.5 py-0.5 rounded">
                         {botYear}
                       </span>
                       <span className="h-px w-3 bg-foreground/50" />
