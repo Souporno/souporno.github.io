@@ -1588,35 +1588,63 @@ function PathTabInner() {
 
       {/* Nested-container timeline */}
       <TooltipProvider delayDuration={120}>
-        <div
-          className="relative mt-10 w-full"
-          style={{ height: PATH_TOTAL_HEIGHT }}
-        >
-          {/* Year spine */}
-          <div
-            className="absolute top-0 bottom-0 w-px bg-foreground/40"
-            style={{ right: 82 }}
-          />
-          {PATH_YEARS.map((y) => {
-            const yTop = yFromDec(y);
+        <div className="relative mt-10 w-full">
+          {pathParents.map((p, idx) => {
+            const side: "left" | "right" =
+              p.kind === "academic" ? "left" : "right";
+            const topYear = Math.floor(p.endDec);
+            const botYear = Math.floor(p.startDec);
             return (
-              <div
-                key={y}
-                className="absolute flex items-center gap-2"
-                style={{ top: yTop - 7, right: 0, width: 90 }}
-              >
-                <span className="h-px w-3 bg-foreground/70" />
-                <span className="font-mono text-[11px] text-muted-foreground">
-                  {y}
-                </span>
+              <div key={p.label}>
+                <div className="grid grid-cols-[1fr_96px_1fr] items-stretch">
+                  {/* Left slot */}
+                  <div className="flex justify-end pr-2 md:pr-4">
+                    {side === "left" && (
+                      <div className="w-full max-w-md">
+                        <ParentBox p={p} side="left" />
+                      </div>
+                    )}
+                  </div>
+                  {/* Center spine + year anchors */}
+                  <div className="relative flex flex-col items-center">
+                    <div className="w-px flex-1 bg-foreground/40" />
+                    <div className="absolute top-0 -translate-y-1/2 flex items-center gap-1.5">
+                      <span className="h-px w-3 bg-foreground/50" />
+                      <span className="font-mono text-[11px] text-muted-foreground bg-background px-1.5 py-0.5 rounded">
+                        {topYear}
+                      </span>
+                      <span className="h-px w-3 bg-foreground/50" />
+                    </div>
+                    <div className="absolute bottom-0 translate-y-1/2 flex items-center gap-1.5">
+                      <span className="h-px w-3 bg-foreground/50" />
+                      <span className="font-mono text-[11px] text-muted-foreground bg-background px-1.5 py-0.5 rounded">
+                        {botYear}
+                      </span>
+                      <span className="h-px w-3 bg-foreground/50" />
+                    </div>
+                  </div>
+                  {/* Right slot */}
+                  <div className="flex justify-start pl-2 md:pl-4">
+                    {side === "right" && (
+                      <div className="w-full max-w-md">
+                        <ParentBox p={p} side="right" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* Continuous spine segment between parents */}
+                {idx < pathParents.length - 1 && (
+                  <div className="grid grid-cols-[1fr_96px_1fr]">
+                    <div />
+                    <div className="flex justify-center h-10">
+                      <div className="w-px bg-foreground/40" />
+                    </div>
+                    <div />
+                  </div>
+                )}
               </div>
             );
           })}
-
-          {/* Parent containers */}
-          {pathParents.map((p) => (
-            <ParentBox key={p.label} p={p} />
-          ))}
         </div>
       </TooltipProvider>
 
