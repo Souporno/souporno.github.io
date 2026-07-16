@@ -14,6 +14,7 @@ import {
   Star,
 } from "lucide-react";
 import { Paperclip, Download, Trash2 } from "lucide-react";
+import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -1736,28 +1737,24 @@ function HobbiesTab() {
           badge="UW iSchool Research Fair · 2026"
         />
 
-        {/* Card 3 */}
+        {/* Placeholder cards */}
         <HobbyCard
-          id="hobby-pitch"
-          icon="🚀"
-          title="Startup Pitch Competition & UW Science and Technology Showcase"
-          paragraphs={[
-            "In Dr. Mike Teodorescu's entrepreneurship course, my team took our idea beyond the classroom — placing 2nd in the course startup pitch competition. That placed us among the top 17 teams selected to represent the iSchool and pitch at the University of Washington Science and Technology Showcase.",
-            "That journey — from classroom idea to public pitch stage — changed how I think about innovation. Strong ideas are only the beginning. What matters is whether they can be structured, tested, communicated clearly, and made useful in the real world.",
-          ]}
-          badge="Top 17 Teams · UW Science & Technology Showcase"
+          id="hobby-movies"
+          icon="🎬"
+          title="Movies & Shows"
+          paragraphs={["Coming soon — I'll be adding my favorites here."]}
         />
-
-        {/* Card 4 */}
         <HobbyCard
-          id="hobby-whatsapp"
-          icon="💬"
-          title="The MSIM WhatsApp Community"
-          paragraphs={[
-            "I noticed a gap in the MSIM student experience: there was no fast, informal, peer-centered support channel. Students had questions about coursework, housing, part-time jobs, and logistics — but formal channels were too slow for everyday needs.",
-            "So I created and continue to run an MSIM WhatsApp community. Over time it became a connective layer — cross-sharing resources from CIRCLE, HFS opportunities, event announcements, and peer support in real time.",
-          ]}
-          quote={`"Support and belonging don't happen automatically. They have to be intentionally built and sustained."`}
+          id="hobby-museums"
+          icon="🖼️"
+          title="Museums & Art Galleries"
+          paragraphs={["Coming soon — I'll be adding my favorites here."]}
+        />
+        <HobbyCard
+          id="hobby-reading"
+          icon="📖"
+          title="Reading"
+          paragraphs={["Coming soon — I'll be adding my favorites here."]}
         />
 
         {/* Card 5 */}
@@ -1786,9 +1783,82 @@ function HobbiesTab() {
         />
       </div>
 
+      {/* Life in Frames photo gallery */}
+      <section className="mt-20 rounded-3xl bg-[#FBF5EA] px-6 md:px-10 py-12">
+        <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-8 text-center">
+          Life in Frames
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <PolaroidSlot key={i} id={`life-frame-${i}`} tilt={i % 2 === 0 ? -2 : 2} />
+          ))}
+        </div>
+      </section>
+
       <p className="mt-16 text-center italic text-muted-foreground">
         More to come — I'm always adding.
       </p>
+    </div>
+  );
+}
+
+function PolaroidSlot({ id, tilt }: { id: string; tilt: number }) {
+  const [attachments, addAttachments, removeAttachment] = useProjectAttachments(id);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const photo = attachments.find((a) => a.type.startsWith("image/"));
+  return (
+    <div
+      className="relative rounded-md border-2 border-dashed border-[#D9C9A8] bg-white p-3 pb-6 shadow-md transition-transform hover:rotate-0 hover:scale-[1.02]"
+      style={{ transform: `rotate(${tilt}deg)` }}
+    >
+      {/* Washi tape */}
+      <div
+        className="absolute -top-2 left-1/2 h-4 w-20 -translate-x-1/2 opacity-90 shadow-sm"
+        style={{
+          background:
+            "repeating-linear-gradient(45deg, #E9C77A 0 6px, #F3DDA3 6px 12px)",
+          transform: `translateX(-50%) rotate(${tilt < 0 ? 3 : -3}deg)`,
+        }}
+        aria-hidden
+      />
+      <button
+        type="button"
+        onClick={() => fileRef.current?.click()}
+        className="relative block aspect-square w-full overflow-hidden rounded-sm bg-muted/60"
+        aria-label={photo ? "Replace photo" : "Add photo"}
+      >
+        {photo ? (
+          <img src={photo.dataUrl} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+            <Camera className="h-8 w-8" />
+            <span className="text-xs">Add photo</span>
+          </div>
+        )}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files?.length) {
+            if (photo) removeAttachment(photo.id);
+            addAttachments(e.target.files);
+          }
+          e.target.value = "";
+        }}
+      />
+      {photo && (
+        <button
+          type="button"
+          onClick={() => removeAttachment(photo.id)}
+          className="absolute top-2 right-2 rounded-full bg-background/90 p-1 opacity-0 transition-opacity hover:bg-background group-hover:opacity-100"
+          aria-label="Remove photo"
+        >
+          <Trash2 className="h-3.5 w-3.5 text-foreground/70" />
+        </button>
+      )}
     </div>
   );
 }
