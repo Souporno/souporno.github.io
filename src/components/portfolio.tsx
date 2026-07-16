@@ -1557,7 +1557,7 @@ function ParentBox({
 
 function PathTabInner() {
   return (
-    <div className="mx-auto max-w-5xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
         My Journey
       </h2>
@@ -1600,7 +1600,7 @@ function PathTabInner() {
                   {/* Left slot */}
                   <div className="flex justify-end pr-2 md:pr-4">
                     {side === "left" && (
-                      <div className="w-full max-w-md">
+                      <div className="w-full">
                         <ParentBox p={p} side="left" />
                       </div>
                     )}
@@ -1626,7 +1626,7 @@ function PathTabInner() {
                   {/* Right slot */}
                   <div className="flex justify-start pl-2 md:pl-4">
                     {side === "right" && (
-                      <div className="w-full max-w-md">
+                      <div className="w-full">
                         <ParentBox p={p} side="right" />
                       </div>
                     )}
