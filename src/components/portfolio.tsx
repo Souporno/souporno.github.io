@@ -1525,23 +1525,38 @@ function ParentBox({
       </p>
 
       {p.children.length > 0 && (
-        <div
-          className="mt-3 grid gap-2"
-          style={{ gridTemplateColumns: `repeat(${laneCount}, minmax(0, 1fr))` }}
-        >
-          {lanes.map((laneChildren, li) => (
-            <div key={li} className="flex flex-col gap-2">
-              {laneChildren.map((c, i) => (
+        laneCount > 2 ? (
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {[...p.children]
+              .sort((a, b) => b.startDec - a.startDec)
+              .map((c, i) => (
                 <ChildCard
-                  key={`${li}-${i}`}
+                  key={i}
                   c={c}
                   accentBorder={childBorder}
                   tipSide={tipSide}
                 />
               ))}
-            </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div
+            className="mt-3 grid gap-2"
+            style={{ gridTemplateColumns: `repeat(${laneCount}, minmax(0, 1fr))` }}
+          >
+            {lanes.map((laneChildren, li) => (
+              <div key={li} className="flex flex-col gap-2">
+                {laneChildren.map((c, i) => (
+                  <ChildCard
+                    key={`${li}-${i}`}
+                    c={c}
+                    accentBorder={childBorder}
+                    tipSide={tipSide}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        )
       )}
 
       {p.achievements.length > 0 && (
