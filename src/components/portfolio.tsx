@@ -1252,15 +1252,6 @@ const pathParents: PathParent[] = [
     endDec: decOf(2026, 6),
     children: [
       {
-        title: "Graduate Student Program Coordinator",
-        org: "CIRCLE, UW Student Life",
-        startDec: decOf(2025, 7),
-        endDec: decOf(2026, 3),
-        period: "Jul 2025 – Mar 2026",
-        notes:
-          "Designed and coordinated programs connecting 15,000+ international and domestic students. Led Welcome Program, DOL ID visits, wellness sessions, and visa info sessions.",
-      },
-      {
         title: "Graduate Researcher — People Analytics Lab",
         org: "University of Washington",
         startDec: decOf(2025, 9),
@@ -1270,15 +1261,6 @@ const pathParents: PathParent[] = [
           "Integrated HRIS, engagement, and performance datasets (1,600+ employees). Built a Performance Archetypes Framework in Python. Funded by the iSchool Workforce Systems Innovation Term Fund under Dr. Heather Whiteman.",
       },
       {
-        title: "Graduate Teaching Assistant (Reader/Grader)",
-        org: "UW — IMT 550, Prof. Jim Loter",
-        startDec: decOf(2026, 1),
-        endDec: decOf(2026, 3),
-        period: "Jan 2026 – Mar 2026",
-        notes:
-          "Prepared course materials, evaluated assignments and exams, and maintained grading records for Policy and Ethics in Information Management.",
-      },
-      {
         title: "Salesforce Capstone — Talent Nudging System",
         org: "UW × Salesforce Workforce Intelligence",
         startDec: decOf(2026, 1),
@@ -1286,6 +1268,24 @@ const pathParents: PathParent[] = [
         period: "Jan 2026 – Jun 2026",
         notes:
           "Redesigned Salesforce's manager nudging system using a cluster-based governance framework. Recognized with the Visionary Lens Award at the iSchool Capstone Showcase.",
+      },
+      {
+        title: "Graduate Student Program Coordinator",
+        org: "CIRCLE, UW Student Life",
+        startDec: decOf(2025, 7),
+        endDec: decOf(2026, 3),
+        period: "Jul 2025 – Mar 2026",
+        notes:
+          "Designed and coordinated programs connecting 15,000+ international and domestic students. Led Welcome Program, DOL ID visits, wellness sessions, and visa info sessions.",
+      },
+      {
+        title: "Graduate Teaching Assistant (Reader/Grader)",
+        org: "UW — IMT 550, Prof. Jim Loter",
+        startDec: decOf(2026, 1),
+        endDec: decOf(2026, 3),
+        period: "Jan 2026 – Mar 2026",
+        notes:
+          "Prepared course materials, evaluated assignments and exams, and maintained grading records for Policy and Ethics in Information Management.",
       },
     ],
     achievements: [
@@ -1572,7 +1572,7 @@ function ParentBox({
 
 function PathTabInner() {
   return (
-    <div className="mx-auto max-w-6xl px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-[1600px] px-6 md:px-10 pt-16 md:pt-20 pb-20 animate-fade-in">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
         My Journey
       </h2>
