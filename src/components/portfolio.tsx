@@ -1116,20 +1116,19 @@ function AboutSection() {
         </h2>
         <div className="space-y-5 text-lg leading-relaxed text-foreground/85">
           <p>
-            My work sits at the intersection of <em>people, data, and strategy</em>. I'm drawn to
-            problems where understanding human behavior and organizational dynamics can be
-            unlocked through rigorous analysis.
+            My work sits at the intersection of People, Data, and Strategy.
           </p>
           <p>
-            I come from a background that blends technical depth (Python, SQL, Tableau,
-            synthetic data generation) with product and strategic thinking (OKRs, roadmapping,
-            MoSCoW/ICE prioritization). I'm equally comfortable writing a data pipeline and
-            presenting a business case to executives.
+            I’m drawn to problems where human behavior, organizational systems, and business outcomes overlap with questions like why employees stay, how teams perform, where processes break down, and how better data can help leaders make more thoughtful decisions.
           </p>
           <p>
-            When I'm not building dashboards or wrangling datasets, I'm thinking about the
-            future of work — and how organizations can take better care of the people inside
-            them.
+            I bring a mix of technical depth and business judgment: building SQL/Python pipelines, designing Tableau dashboards, validating messy workforce datasets, developing KPI frameworks, and translating complex analysis into clear recommendations for stakeholders.
+          </p>
+          <p>
+            Most recently, my work has focused on people analytics, workforce intelligence, and AI-enabled decision support, including HRIS and engagement data analysis, attrition modeling, workforce segmentation, and a Salesforce Workforce Intelligence capstone on manager nudges.
+          </p>
+          <p>
+            At the core, I care about making data useful: not just accurate, but understandable, actionable, and responsible.
           </p>
           <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
